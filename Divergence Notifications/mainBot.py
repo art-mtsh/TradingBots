@@ -119,7 +119,7 @@ def divergence(cryptoPair: str, interval: int):
 
 	return sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=-10, direction=" is BULLish")
 
-# while True:
+while True:
 	instruments = ["1000LUNCBUSD",
 				   "1000LUNCUSDT",
 				   "1000SHIBUSDT",
@@ -278,13 +278,13 @@ def divergence(cryptoPair: str, interval: int):
 				   "ZILUSDT",
 				   "ZRXUSDT"]
 
-	# print(f"Starting new cycle at {str(datetime.utcnow())[slicer]}")
+	print(f"Starting new cycle at {str(datetime.utcnow())[slicer]} ")
 	# for i in instruments:
-	# 	# print(f"running {i}...")
-	# 	divergence(i, 5)
-	# print(f"Finished current cycle at {str(datetime.utcnow())[slicer]}")
+		# print(f"running {i}...")
+		# divergence(i, 5)
+	print(f"Finished current cycle at {str(datetime.utcnow())[slicer]}")
 
 	sleep(240)
 
-divergence('AAVEUSDT', 5)
+# divergence('AAVEUSDT', 5)
 
