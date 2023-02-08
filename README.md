@@ -1,0 +1,2 @@
+# TradingBots
+ Bots from scratch
