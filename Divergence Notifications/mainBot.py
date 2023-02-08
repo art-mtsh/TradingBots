@@ -11,8 +11,6 @@ from time import sleep
 TOKEN = '5657267406:AAExhEvjG3tjb0KL6mTM9otoFiL6YJ_1aSA'
 bot = telebot.TeleBot(TOKEN)
 
-slicer = slice(0, -7)
-
 # --- PENDING SEARCH ---
 
 def divergence(cryptoPair: str, interval: int):
@@ -90,13 +88,12 @@ def divergence(cryptoPair: str, interval: int):
 					if cHigh[-b] >= cHigh[-i - 2] or cumDeltaValues[-b] >= cumDeltaValues[-i - 2]:
 						clean += 1
 				if clean == 0:
-					bot.send_message(662482931, f'''
-					{str(now)[slicer]}
-					{symbol} is BEARish	on {timeinterval}m timeframe				
-					https://www.binance.com/en/futures/{symbol}/
-					''', disable_web_page_preview=True)
+					bot.send_message(662482931, f"{datetime.now().strftime('%b %d, %H:%M')} ... {symbol}"
+												f"\nBEARish pattern on {timeinterval}m timeframe"
+												f"\nhttps://www.binance.com/en/futures/{symbol}/",
+									 disable_web_page_preview=True)
 					sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=int(-i - 2), direction=" is BEARish")
-					print(f"{str(now)[slicer]} Bearish {symbol}. CD fractals on volumes: {cVolume[-1]} >= {cVolume[-i - 2]}")
+					print(f"{datetime.now().strftime('%b %d, %H:%M')} Bearish {symbol}. CD fractals on volumes: {cVolume[-1]} >= {cVolume[-i - 2]}")
 			break
 
 	for i in range(2, cumDeltaPeriod - 5):
@@ -108,16 +105,15 @@ def divergence(cryptoPair: str, interval: int):
 					if cLow[-b] <= cLow[-i - 2] or cumDeltaValues[-b] <= cumDeltaValues[-i - 2]:
 						clean += 1
 				if clean == 0:
-					bot.send_message(662482931, f'''
-					{str(now)[slicer]}
-					{symbol} is BULLish on {timeinterval}m timeframe
-					https://www.binance.com/en/futures/{symbol}/
-					''', disable_web_page_preview=True)
+					bot.send_message(662482931, f"{datetime.now().strftime('%b %d, %H:%M')} ... {symbol}"
+												f"\nBULLish pattern on {timeinterval}m timeframe"
+												f"\nhttps://www.binance.com/en/futures/{symbol}/",
+									 disable_web_page_preview=True)
 					sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=int(-i - 2), direction=" is BULLish")
-					print(f"{str(now)[slicer]} Bullish {symbol}. CD fractals on volumes: {cVolume[-1]} <= {cVolume[-i - 2]}")
+					print(f"{datetime.now().strftime('%b %d, %H:%M')} Bullish {symbol}. CD fractals on volumes: {cVolume[-1]} <= {cVolume[-i - 2]}")
 			break
 
-	return sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=-10, direction=" is BULLish")
+	# return sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=-10, direction=" is BULLish")
 
 while True:
 	instruments = ["1000LUNCBUSD",
@@ -152,9 +148,9 @@ while True:
 				   "BLZUSDT",
 				   "BNBUSDT",
 				   "BNXUSDT",
-				   "BTCDOMUSDT",
-				   "BTCUSDT",
-				   "BTCUSDT",
+				   # "BTCDOMUSDT",
+				   # "BTCUSDT",
+				   # "BTCUSDT",
 				   "C98USDT",
 				   "CELOUSDT",
 				   "CELRUSDT",
@@ -168,7 +164,7 @@ while True:
 				   "CVXUSDT",
 				   "DARUSDT",
 				   "DASHUSDT",
-				   "DEFIUSDT",
+				   # "DEFIUSDT",
 				   "DENTUSDT",
 				   "DGBUSDT",
 				   "DOGEUSDT",
@@ -178,15 +174,15 @@ while True:
 				   "EGLDUSDT",
 				   "ENJUSDT",
 				   "ENSUSDT",
-				   "EOSUSDT",
+				   # "EOSUSDT",
 				   "ETCUSDT",
-				   "ETHUSDT",
-				   "ETHUSDT",
+				   # "ETHUSDT",
+				   # "ETHUSDT",
 				   "FETUSDT",
 				   "FILUSDT",
 				   "FLMUSDT",
 				   "FLOWUSDT",
-				   "FOOTBALLUSDT",
+				   # "FOOTBALLUSDT",
 				   "FTMUSDT",
 				   "FXSUSDT",
 				   "GALAUSDT",
@@ -251,7 +247,7 @@ while True:
 				   "SKLUSDT",
 				   "SNXUSDT",
 				   "SOLUSDT",
-				   "SPELLUSDT",
+				   # "SPELLUSDT",
 				   "STGUSDT",
 				   "STMXUSDT",
 				   "STORJUSDT",
@@ -267,24 +263,26 @@ while True:
 				   "VETUSDT",
 				   "WAVESUSDT",
 				   "WOOUSDT",
-				   "XEMUSDT",
+				   # "XEMUSDT",
 				   "XLMUSDT",
 				   "XMRUSDT",
 				   "XRPUSDT",
 				   "XTZUSDT",
-				   "YFIUSDT",
+				   # "YFIUSDT",
 				   "ZECUSDT",
 				   "ZENUSDT",
 				   "ZILUSDT",
 				   "ZRXUSDT"]
 
-	print(f"Starting new cycle at {str(datetime.utcnow())[slicer]} ")
-	# for i in instruments:
-		# print(f"running {i}...")
-		# divergence(i, 5)
-	print(f"Finished current cycle at {str(datetime.utcnow())[slicer]}")
-
-	sleep(240)
+	if datetime.now().strftime('%M')[-1] == "4" or datetime.now().strftime('%M')[-1] == "9":
+		print(f"Starting new cycle at {datetime.now().strftime('%H:%M:%S')} ")
+		for i in instruments:
+			# print(f"running {i}...")
+			divergence(i, 5)
+		print(f"Finished current cycle at {datetime.now().strftime('%H:%M:%S')}")
+		sleep(200)
+	else:
+		sleep(1)
 
 # divergence('AAVEUSDT', 5)
 

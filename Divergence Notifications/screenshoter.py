@@ -66,15 +66,14 @@ def sendScreen(timeinterval:int, symbol:str, cumDeltaValues:list, dcoordinate:in
 	# Grid
 	plt.grid(color='grey', linestyle='-', linewidth=0.1)
 
-	# plt.show()
 	# SAVE AND SEND
 	plt.savefig(f'{symbol}.png', dpi=600, bbox_inches='tight', pad_inches=0.2)
 	pic = open(f'{symbol}.png', 'rb')
-
 	bot.send_photo(662482931, pic)
+
+	# CLEANING
 	pic.close()
 	os.remove(f'{symbol}.png')
-
 	plt.cla()
 	plt.clf()
 
