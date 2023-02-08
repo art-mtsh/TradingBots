@@ -2,6 +2,9 @@ import pandas
 import requests
 from datetime import datetime
 import calendar
+import telebot
+from screenshoter import sendScreen
+from time import sleep
 
 def dataget(symbol: str, timeinterval: int):
 
@@ -31,3 +34,5 @@ def dataget(symbol: str, timeinterval: int):
 	cVolume = df['cVolume'].to_numpy()
 
 	return cOpen, cHigh, cLow, cClose, cVolume, df
+
+print(dataget("AAVEUSDT", 5)[0])

@@ -1,6 +1,7 @@
 import telebot
 from datetime import datetime
 from time import sleep
+from screenshoter import sendScreen
 
 # --- TELEGRAM ---
 
@@ -18,29 +19,4 @@ bot = telebot.TeleBot(TOKEN)
 
 # bot.send_message(662482931, f"{datetime.now().strftime('%H:%M')[0:4]}0")
 
-# while True:
-# 	if datetime.now().strftime('%M')[-1] == "5" or datetime.now().strftime('%M')[-1] == "0":
-# 		bot.send_message(662482931, f"Time to analyze, its {datetime.now().strftime('%H:%M')} now")
-# 		sleep(60)
-# 	else:
-# 		sleep(60)
-
-# nowis = datetime.now().strftime('%M')
-# timeinterval = 30
-# timenoww = datetime.now().strftime('%H:') + str(int(datetime.now().strftime('%M'))//timeinterval*timeinterval)
-# print(nowis[-2])
-# print(nowis[-1])
-
-# bot.send_message(662482931, f"{datetime.now().strftime('%H:%M'))
-# while True:
-# 	print(timenoww)
-# 	sleep(60)
-
-# symbol="AAVEUSDT"
-# timeinterval = 60
-# print('https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + str(
-# 		timeinterval) + 'm' + '&limit=51')
-
-mytime = "12"
-tf = 15
-print(int(mytime) // tf)
+(bot.send_message(662482931, f"Bigger")) if 4 - 2 == 2 else None
