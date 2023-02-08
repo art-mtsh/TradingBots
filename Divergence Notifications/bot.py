@@ -16,9 +16,20 @@ bot = telebot.TeleBot(TOKEN)
 # pic = open('AAVEUSDT.png', 'rb')
 # bot.send_photo(662482931, pic)
 
-while True:
-	if datetime.now().strftime('%M')[-1] == "5" or datetime.now().strftime('%M')[-1] == "0":
-		bot.send_message(662482931, f"Time to analyze, its {datetime.now().strftime('%H:%M')} now")
-		sleep(60)
-	else:
-		sleep(60)
+# bot.send_message(662482931, f"{datetime.now().strftime('%H:%M')[0:4]}0")
+
+# while True:
+# 	if datetime.now().strftime('%M')[-1] == "5" or datetime.now().strftime('%M')[-1] == "0":
+# 		bot.send_message(662482931, f"Time to analyze, its {datetime.now().strftime('%H:%M')} now")
+# 		sleep(60)
+# 	else:
+# 		sleep(60)
+
+timeinterval = 60
+timenoww = datetime.now().strftime('%H:') + str(int(datetime.now().strftime('%M'))//timeinterval*timeinterval)
+print(timenoww)
+
+# bot.send_message(662482931, f"{datetime.now().strftime('%H:%M'))
+# while True:
+# 	print(timenoww)
+# 	sleep(60)

@@ -39,8 +39,8 @@ def sendScreen(timeinterval:int, symbol:str, cumDeltaValues:list, dcoordinate:in
 	stock_prices = df
 	up = stock_prices[stock_prices.cClose >= stock_prices.cOpen]
 	down = stock_prices[stock_prices.cClose < stock_prices.cOpen]
-	col1 = 'red'
-	col2 = 'green'
+	col1 = 'green'
+	col2 = 'red'
 	# Candlestick elements width
 	width = .8
 	width2 = .07

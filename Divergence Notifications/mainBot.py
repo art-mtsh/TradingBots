@@ -13,7 +13,7 @@ bot = telebot.TeleBot(TOKEN)
 
 # --- PENDING SEARCH ---
 
-def divergence(cryptoPair: str, interval: int):
+def divergence(cryptoPair: str, interval: int, risk: int):
 	symbol = cryptoPair
 	timeinterval = interval
 
@@ -78,6 +78,10 @@ def divergence(cryptoPair: str, interval: int):
 				cumDeltaValues.append(cumDeltaValues[-1] - int(D1))
 
 	# --- CUMULATIVE DELTA FRACTAL ---
+	atr = (sum(sum([cHigh - cLow])) / len(cClose))
+	atrpercent = atr / (cClose[-1] / 100)
+	atrpercent = float('{:.2f}'.format(atrpercent))
+	timeintimeframe = datetime.now().strftime('%H:') + str(int(datetime.now().strftime('%M'))//timeinterval*timeinterval)
 
 	for i in range(2, cumDeltaPeriod - 5):
 		if cumDeltaValues[-i] < cumDeltaValues[-i - 1] < cumDeltaValues[-i - 2] > cumDeltaValues[-i - 3] > \
@@ -88,12 +92,16 @@ def divergence(cryptoPair: str, interval: int):
 					if cHigh[-b] >= cHigh[-i - 2] or cumDeltaValues[-b] >= cumDeltaValues[-i - 2]:
 						clean += 1
 				if clean == 0:
-					bot.send_message(662482931, f"{datetime.now().strftime('%b %d, %H:%M')} ... {symbol}"
-												f"\nBEARish pattern on {timeinterval}m timeframe"
+					bot.send_message(662482931, f"🔴 SELL {symbol} at {timeintimeframe} ({timeinterval}m)"
+												f"\nOpen parameters:"
+												f"\nPrice: {cLow[-1]}"
+												f"\nSize: ${int(risk / (atrpercent / 100))}"
+												f"\nRisk: ${risk}, ATR {atr} | {atrpercent}%"
+												f"\nStop: {cLow[-1] + atr}"
 												f"\nhttps://www.binance.com/en/futures/{symbol}/",
 									 disable_web_page_preview=True)
 					sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=int(-i - 2), direction=" is BEARish")
-					print(f"{datetime.now().strftime('%b %d, %H:%M')} Bearish {symbol}. CD fractals on volumes: {cVolume[-1]} >= {cVolume[-i - 2]}")
+					print(f"{datetime.now().strftime('%b %d, %H:%M')} Bearish {symbol}. CD fractal on {cVolume[-i - 2]} volume")
 			break
 
 	for i in range(2, cumDeltaPeriod - 5):
@@ -105,15 +113,20 @@ def divergence(cryptoPair: str, interval: int):
 					if cLow[-b] <= cLow[-i - 2] or cumDeltaValues[-b] <= cumDeltaValues[-i - 2]:
 						clean += 1
 				if clean == 0:
-					bot.send_message(662482931, f"{datetime.now().strftime('%b %d, %H:%M')} ... {symbol}"
-												f"\nBULLish pattern on {timeinterval}m timeframe"
+					bot.send_message(662482931, f"🟢 BUY {symbol} at {timeintimeframe} ({timeinterval}m)"
+												f"\nOpen parameters:"
+												f"\nPrice: {cHigh[-1]}"
+												f"\nSize: ${int(risk / (atrpercent / 100))}"
+												f"\nRisk: ${risk}, ATR {atr} | {atrpercent}%"
+												f"\nStop: {cHigh[-1] - atr}"
 												f"\nhttps://www.binance.com/en/futures/{symbol}/",
 									 disable_web_page_preview=True)
 					sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=int(-i - 2), direction=" is BULLish")
-					print(f"{datetime.now().strftime('%b %d, %H:%M')} Bullish {symbol}. CD fractals on volumes: {cVolume[-1]} <= {cVolume[-i - 2]}")
+					print(f"{datetime.now().strftime('%b %d, %H:%M')} Bullish {symbol}. CD fractal on {cVolume[-i - 2]} volume")
 			break
 
 	# return sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=-10, direction=" is BULLish")
+	# print(f"\nPosition with ${risk} risk per ATR {atr}% will be {risk / (atr / 100)}")
 
 while True:
 	instruments = ["1000LUNCBUSD",
@@ -182,7 +195,7 @@ while True:
 				   "FILUSDT",
 				   "FLMUSDT",
 				   "FLOWUSDT",
-				   # "FOOTBALLUSDT",
+				   "FOOTBALLUSDT",
 				   "FTMUSDT",
 				   "FXSUSDT",
 				   "GALAUSDT",
@@ -274,15 +287,15 @@ while True:
 				   "ZILUSDT",
 				   "ZRXUSDT"]
 
-	if datetime.now().strftime('%M')[-1] == "4" or datetime.now().strftime('%M')[-1] == "9":
+	if datetime.now().strftime('%M')[-1] == "3" or datetime.now().strftime('%M')[-1] == "8":
 		print(f"Starting new cycle at {datetime.now().strftime('%H:%M:%S')} ")
 		for i in instruments:
 			# print(f"running {i}...")
-			divergence(i, 5)
+			divergence(i, 5, 1)
 		print(f"Finished current cycle at {datetime.now().strftime('%H:%M:%S')}")
 		sleep(200)
 	else:
 		sleep(1)
 
-# divergence('AAVEUSDT', 5)
+# divergence('AAVEUSDT', 5, 1)
 
