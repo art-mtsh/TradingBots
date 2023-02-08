@@ -25,11 +25,22 @@ bot = telebot.TeleBot(TOKEN)
 # 	else:
 # 		sleep(60)
 
-timeinterval = 60
-timenoww = datetime.now().strftime('%H:') + str(int(datetime.now().strftime('%M'))//timeinterval*timeinterval)
-print(timenoww)
+# nowis = datetime.now().strftime('%M')
+# timeinterval = 30
+# timenoww = datetime.now().strftime('%H:') + str(int(datetime.now().strftime('%M'))//timeinterval*timeinterval)
+# print(nowis[-2])
+# print(nowis[-1])
 
 # bot.send_message(662482931, f"{datetime.now().strftime('%H:%M'))
 # while True:
 # 	print(timenoww)
 # 	sleep(60)
+
+# symbol="AAVEUSDT"
+# timeinterval = 60
+# print('https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + str(
+# 		timeinterval) + 'm' + '&limit=51')
+
+mytime = "12"
+tf = 15
+print(int(mytime) // tf)

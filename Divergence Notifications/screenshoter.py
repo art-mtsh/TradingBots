@@ -5,38 +5,40 @@ import os
 import calendar
 import requests
 import pandas
+from datadownload import dataget
 
 TOKEN = '5657267406:AAExhEvjG3tjb0KL6mTM9otoFiL6YJ_1aSA'
 bot = telebot.TeleBot(TOKEN)
 
 
-def sendScreen(timeinterval:int, symbol:str, cumDeltaValues:list, dcoordinate:int, direction:str):
+def sendScreen(symbol:str, timeinterval:int, cumDeltaValues:list, dcoordinate:int, direction:str):
 
-	# --- DATA ---
-	slicer = slice(0, -7)
-	now = datetime.utcnow()
-	unixtime = calendar.timegm(now.utctimetuple())
-	since = unixtime
-	start = str(since - 60 * 60 * 10)
+	# # --- DATA ---
+	# slicer = slice(0, -7)
+	# now = datetime.utcnow()
+	# unixtime = calendar.timegm(now.utctimetuple())
+	# since = unixtime
+	# start = str(since - 60 * 60 * 10)
+	#
+	# url = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + str(symbol) + '&interval=' + str(timeinterval) + 'm' + '&limit=51'
+	# data = requests.get(url).json()
+	#
+	# D = pandas.DataFrame(data)
+	# D.columns = ['open_time', 'cOpen', 'cHigh', 'cLow', 'cClose', 'cVolume', 'close_time', 'qav', 'num_trades',
+	# 			 'taker_base_vol', 'taker_quote_vol', 'is_best_match']
+	#
+	# df = D
+	#
+	# df['cOpen'] = df['cOpen'].astype(float)
+	# df['cHigh'] = df['cHigh'].astype(float)
+	# df['cLow'] = df['cLow'].astype(float)
+	# df['cClose'] = df['cClose'].astype(float)
 
-	url = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + str(symbol) + '&interval=' + str(timeinterval) + 'm' + '&limit=51'
-	data = requests.get(url).json()
-
-	D = pandas.DataFrame(data)
-	D.columns = ['open_time', 'cOpen', 'cHigh', 'cLow', 'cClose', 'cVolume', 'close_time', 'qav', 'num_trades',
-				 'taker_base_vol', 'taker_quote_vol', 'is_best_match']
-
-	df = D
-
-	df['cOpen'] = df['cOpen'].astype(float)
-	df['cHigh'] = df['cHigh'].astype(float)
-	df['cLow'] = df['cLow'].astype(float)
-	df['cClose'] = df['cClose'].astype(float)
+	stock_prices = dataget(symbol=symbol, timeinterval=timeinterval)[5]
 
 	# MAIN CHART
 	plt.subplot(2, 1, 1)
 	plt.suptitle(symbol + direction)
-	stock_prices = df
 	up = stock_prices[stock_prices.cClose >= stock_prices.cOpen]
 	down = stock_prices[stock_prices.cClose < stock_prices.cOpen]
 	col1 = 'green'
