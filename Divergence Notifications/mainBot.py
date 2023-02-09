@@ -156,7 +156,7 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 
 	if ((cHigh[-1] - cLow[-1]) + (cHigh[-2] - cLow[-2])) > 3 * atr and \
 		(cClose[-1] > cClose[-2] > cClose[-3] or cClose[-1] < cClose[-2] < cClose[-3]) and \
-		atrpercent > 0.8:
+		atrpercent > 1.2:
 
 		bot.send_message(662482931, f"🟡 CHECK ... {symbol} ... {timeintimeframe} ({timeinterval}m)"
 									f"\n1xATR: {float('{:.2f}'.format(atrpercent))}% ... "
@@ -180,8 +180,7 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 									f"fee {float('{:.2f}'.format(risk / (atrpercent*3 / 100) *  0.0008))}",
 						 disable_web_page_preview=True)
 
-		print(f"{datetime.now().strftime('%b %d, %H:%M')} Check {symbol}! 2xATR: {float('{:.2f}'.format(atrpercent*4))}")
-
+		print(f"{datetime.now().strftime('%b %d, %H:%M')} Check {symbol}! Filter ATR > {float('{:.2f}'.format(atrpercent*1.2))}")
 
 	# return sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=-10, direction=" is BULLish")
 	# print(f"\nPosition with ${risk} risk per ATR {atr}% will be {risk / (atr / 100)}")
