@@ -76,7 +76,7 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 
 	for i in range(2, cumDeltaPeriod - 5):
 		if cumDeltaValues[-i] < cumDeltaValues[-i - 1] < cumDeltaValues[-i - 2] > cumDeltaValues[-i - 3] > cumDeltaValues[-i - 4]:
-			if cumDeltaValues[-1] >= cumDeltaValues[-i - 2] and cHigh[-1] < cHigh[-i - 2] and abs(cHigh[-i - 2] - cHigh[-1]) > 0.6 * atr:
+			if cumDeltaValues[-1] >= cumDeltaValues[-i - 2] and cHigh[-1] < cHigh[-i - 2] and abs(cHigh[-i - 2] - cHigh[-1]) > 0.3 * atr and atrpercent > 0.8:
 				clean = 0
 				for b in range(2, i + 2):
 					if cHigh[-b] >= cHigh[-i - 2] or cumDeltaValues[-b] >= cumDeltaValues[-i - 2]:
@@ -114,7 +114,7 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 
 	for i in range(2, cumDeltaPeriod - 5):
 		if cumDeltaValues[-i] > cumDeltaValues[-i - 1] > cumDeltaValues[-i - 2] < cumDeltaValues[-i - 3] < cumDeltaValues[-i - 4]:
-			if cumDeltaValues[-1] <= cumDeltaValues[-i - 2] and cLow[-1] > cLow[-i - 2] and abs(cLow[-1] - cLow[-i - 2]) > 0.6 * atr:
+			if cumDeltaValues[-1] <= cumDeltaValues[-i - 2] and cLow[-1] > cLow[-i - 2] and abs(cLow[-1] - cLow[-i - 2]) > 0.3 * atr and atrpercent > 0.8:
 				clean = 0
 				for b in range(2, i + 2):
 					if cLow[-b] <= cLow[-i - 2] or cumDeltaValues[-b] <= cumDeltaValues[-i - 2]:
@@ -154,8 +154,9 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 
 	# barpercent = abs(cOpen[-1] - cClose[-1]) / ((cHigh[-1] - cLow[-1]) / 100) - не працює, бо розрахунок буває на 00:01 від відкриття 0/0.0
 
-	if ((cHigh[-1] - cLow[-1]) + (cHigh[-2] - cLow[-2])) > 4 * atr and \
-		(cClose[-1] > cClose[-2] > cClose[-3] or cClose[-1] < cClose[-2] < cClose[-3]):
+	if ((cHigh[-1] - cLow[-1]) + (cHigh[-2] - cLow[-2])) > 3 * atr and \
+		(cClose[-1] > cClose[-2] > cClose[-3] or cClose[-1] < cClose[-2] < cClose[-3]) and \
+		atrpercent > 0.8:
 
 		bot.send_message(662482931, f"🟡 CHECK ... {symbol} ... {timeintimeframe} ({timeinterval}m)"
 									f"\n1xATR: {float('{:.2f}'.format(atrpercent))}% ... "
@@ -179,7 +180,7 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 									f"fee {float('{:.2f}'.format(risk / (atrpercent*3 / 100) *  0.0008))}",
 						 disable_web_page_preview=True)
 
-		print(f"{datetime.now().strftime('%b %d, %H:%M')} Check {symbol}! 4xATR: {float('{:.2f}'.format(atrpercent*4))}")
+		print(f"{datetime.now().strftime('%b %d, %H:%M')} Check {symbol}! 2xATR: {float('{:.2f}'.format(atrpercent*4))}")
 
 
 	# return sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=-10, direction=" is BULLish")
