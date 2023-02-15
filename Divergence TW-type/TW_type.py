@@ -2,7 +2,7 @@ import pandas
 import telebot
 from requests import get
 from datetime import datetime
-from screenshoter import sendScreen
+from TWscreenshoter import sendScreen
 from time import sleep
 
 # --- TELEGRAM ---
@@ -42,17 +42,22 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 
 	for i in range(cumDeltaPeriod, 0, -1):
 
-		if cClose[-i] >= cOpen[-i] and cClose[-i] - cOpen[-i] + 2 * (cHigh[-i] - cClose[-i]) + 2 * (
-				cOpen[-i] - cLow[-i]) > 0:
-			U1 = cVolume[-i] * (cHigh[-i] - cLow[-i]) / (
-					cClose[-i] - cOpen[-i] + 2 * (cHigh[-i] - cClose[-i]) + 2 * (cOpen[-i] - cLow[-i]))
+		if abs(cOpen[-i] - cClose[-i]) / ((cHigh[-i] - cLow[-i]) / 100) > 20 and \
+			cClose[-i] >= cOpen[-i] and \
+			cClose[-i] - cOpen[-i] + 2 * (cHigh[-i] - cClose[-i]) + 2 * (cOpen[-i] - cLow[-i]) > 0:
+
+			U1 = cVolume[-i] * (cHigh[-i] - cLow[-i]) / (cClose[-i] - cOpen[-i] + 2 * (cHigh[-i] - cClose[-i]) + 2 * (cOpen[-i] - cLow[-i]))
+
 		else:
 			U1 = 0.0
 
-		if cClose[-i] < cOpen[-i] and cOpen[-i] - cClose[-i] + 2 * (cHigh[-i] - cOpen[-i]) + 2 * (
-				cClose[-i] - cLow[-i]) > 0:
+		if abs(cOpen[-i] - cClose[-i]) / ((cHigh[-i] - cLow[-i]) / 100) > 20 and \
+			cClose[-i] < cOpen[-i] and \
+			cOpen[-i] - cClose[-i] + 2 * (cHigh[-i] - cOpen[-i]) + 2 * (cClose[-i] - cLow[-i]) > 0:
+
 			D1 = cVolume[-i] * (cHigh[-i] - cLow[-i]) / (
 					cOpen[-i] - cClose[-i] + 2 * (cHigh[-i] - cOpen[-i]) + 2 * (cClose[-i] - cLow[-i]))
+
 		else:
 			D1 = 0.0
 
@@ -88,21 +93,20 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 												f"3xATR: {float('{:.2f}'.format(atrpercent*3))}%\n"
 												
 												f"\nOpen parameters (risk: ${risk}):"
-#												1234567890|12345678|1234567|12345678|12345678|12345
-												f"\n    №    | ATR, % | Price | $ Size | ₿ Size | Stop | $ Fee"
+												f"\n    №    | ATR, % |  Price  | $ Size  | ₿ Size  | Stop | $ Fee"
 												
 												f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | {cLow[-1]}  $ {int(risk / (atrpercent / 100))}   "
-												f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100))/cClose[-1]))}    "
+												f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100))/cLow[-1]))}    "
 												f"{float('{:.5f}'.format(cLow[-1] + atr))}    "
 												f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) *  0.0008))}"
 												
 												f"\n2xATR |  {float('{:.2f}'.format(atrpercent*2))}%  | {cLow[-1]}  $ {int(risk / (atrpercent*2 / 100))}   "
-												f"₿ {float('{:.2f}'.format((risk / (atrpercent*2 / 100))/cClose[-1]))}    "
+												f"₿ {float('{:.2f}'.format((risk / (atrpercent*2 / 100))/cLow[-1]))}    "
 												f"{float('{:.5f}'.format(cLow[-1] + atr*2))}    "
 												f"fee {float('{:.2f}'.format(risk / (atrpercent*2 / 100) *  0.0008))}"
 																								
 												f"\n3xATR |  {float('{:.2f}'.format(atrpercent*3))}%  | {cLow[-1]}  $ {int(risk / (atrpercent*3 / 100))}   "
-												f"₿ {float('{:.2f}'.format((risk / (atrpercent*3 / 100))/cClose[-1]))}    "
+												f"₿ {float('{:.2f}'.format((risk / (atrpercent*3 / 100))/cLow[-1]))}    "
 												f"{float('{:.5f}'.format(cLow[-1] + atr*3))}    "
 												f"fee {float('{:.2f}'.format(risk / (atrpercent*3 / 100) *  0.0008))}"
 									
@@ -126,21 +130,20 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 												f"3xATR: {float('{:.2f}'.format(atrpercent*3))}%\n"
 												
 												f"\nOpen parameters (risk: ${risk}):"
-#												1234567890|12345678|1234567|12345678|12345678|12345
-												f"\n    №    | ATR, % | Price | $ Size | ₿ Size | Stop | $ Fee"
+												f"\n    №    | ATR, % |  Price  | $ Size  | ₿ Size  | Stop | $ Fee"
 												
 												f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | {cHigh[-1]}  $ {int(risk / (atrpercent / 100))}   "
-												f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100))/cClose[-1]))}    "
+												f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100))/cHigh[-1]))}    "
 												f"{float('{:.5f}'.format(cHigh[-1] - atr))}    "
 												f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) *  0.0008))}"
 												
 												f"\n2xATR |  {float('{:.2f}'.format(atrpercent*2))}%  | {cHigh[-1]}  $ {int(risk / (atrpercent*2 / 100))}   "
-												f"₿ {float('{:.2f}'.format((risk / (atrpercent*2 / 100))/cClose[-1]))}    "
+												f"₿ {float('{:.2f}'.format((risk / (atrpercent*2 / 100))/cHigh[-1]))}    "
 												f"{float('{:.5f}'.format(cHigh[-1] - atr*2))}    "
 												f"fee {float('{:.2f}'.format(risk / (atrpercent*2 / 100) *  0.0008))}"
 																								
 												f"\n3xATR |  {float('{:.2f}'.format(atrpercent*3))}%  | {cHigh[-1]}  $ {int(risk / (atrpercent*3 / 100))}   "
-												f"₿ {float('{:.2f}'.format((risk / (atrpercent*3 / 100))/cClose[-1]))}    "
+												f"₿ {float('{:.2f}'.format((risk / (atrpercent*3 / 100))/cHigh[-1]))}    "
 												f"{float('{:.5f}'.format(cHigh[-1] - atr*3))}    "
 												f"fee {float('{:.2f}'.format(risk / (atrpercent*3 / 100) *  0.0008))}"
 									
@@ -149,41 +152,6 @@ def divergence(symbol: str, timeinterval: int, risk: float):
 					sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=int(-i - 2), direction=" -> BUY")
 					print(f"{datetime.now().strftime('%b %d, %H:%M')} Bullish {symbol}. CD fractal on {cVolume[-i - 2]} volume")
 			break
-
-	# --- HIGH RANGE BAR ---
-
-	# barpercent = abs(cOpen[-1] - cClose[-1]) / ((cHigh[-1] - cLow[-1]) / 100) - не працює, бо розрахунок буває на 00:01 від відкриття 0/0.0
-
-	if ((cHigh[-1] - cLow[-1]) + (cHigh[-2] - cLow[-2])) > 3 * atr and \
-		(cClose[-1] > cClose[-2] > cClose[-3] or cClose[-1] < cClose[-2] < cClose[-3]) and \
-		atrpercent > 1.2:
-
-		bot.send_message(662482931, f"🟡 CHECK ... {symbol} ... {timeintimeframe} ({timeinterval}m)"
-									f"\n1xATR: {float('{:.2f}'.format(atrpercent))}% ... "
-									f"2xATR: {float('{:.2f}'.format(atrpercent*2))}% ... "
-									f"3xATR: {float('{:.2f}'.format(atrpercent*3))}%\n"
-									
-									f"\nOpen parameters (risk: ${risk}):"
-#									1234567890|12345678|1234567|12345678|12345678|12345
-									f"\n    №    | ATR, % | $ Size | ₿ Size | $ Fee"
-									
-									f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | $ {int(risk / (atrpercent / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100))/cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) *  0.0008))}"
-									
-									f"\n2xATR |  {float('{:.2f}'.format(atrpercent*2))}%  | $ {int(risk / (atrpercent*2 / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent*2 / 100))/cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent*2 / 100) *  0.0008))}"
-																					
-									f"\n3xATR |  {float('{:.2f}'.format(atrpercent*3))}%  | $ {int(risk / (atrpercent*3 / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent*3 / 100))/cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent*3 / 100) *  0.0008))}",
-						 disable_web_page_preview=True)
-
-		print(f"{datetime.now().strftime('%b %d, %H:%M')} Check {symbol}! Filter ATR > {float('{:.2f}'.format(atrpercent*1.2))}")
-
-	# return sendScreen(timeinterval=timeinterval, symbol=symbol, cumDeltaValues=cumDeltaValues, dcoordinate=-10, direction=" is BULLish")
-	# print(f"\nPosition with ${risk} risk per ATR {atr}% will be {risk / (atr / 100)}")
 
 instruments = ["1000LUNCBUSD",
 				   "1000LUNCUSDT",
@@ -344,35 +312,44 @@ instruments = ["1000LUNCBUSD",
 				   "ZRXUSDT"]
 
 while True:
+	try:
+		rsk = 10
+		minutesnow = datetime.now().strftime('%M')
 
-	rsk = 10
-	minutesnow = datetime.now().strftime('%M')
-
-	if minutesnow[-1] == '3' or minutesnow[-1] == '8':
-		print(f"{datetime.now().strftime('%H:%M:%S')} M5 start")
-		for i in instruments:
-			divergence(symbol=i, timeinterval=5, risk=rsk)
-		print(f"{datetime.now().strftime('%H:%M:%S')} M5 end")
-
-		if minutesnow == '13' or minutesnow == '43':
-			print(f"{datetime.now().strftime('%H:%M:%S')} M15 start")
+		if minutesnow[-1] == '3' or minutesnow[-1] == '8':
+			print(f"{datetime.now().strftime('%H:%M:%S')} M5 start")
 			for i in instruments:
-				divergence(symbol=i, timeinterval=15, risk=rsk)
-			print(f"{datetime.now().strftime('%H:%M:%S')} M15 end")
+				divergence(symbol=i, timeinterval=5, risk=rsk)
+				print(".", end="")
+			print(f"{datetime.now().strftime('%H:%M:%S')} M5 end")
 
-		elif minutesnow == '28' or minutesnow == '58':
-			print(f"{datetime.now().strftime('%H:%M:%S')} M15 start")
-			for i in instruments:
-				divergence(symbol=i, timeinterval=15, risk=rsk)
-			print(f"{datetime.now().strftime('%H:%M:%S')} M15 end")
+			if minutesnow == '13' or minutesnow == '43':
+				print(f"{datetime.now().strftime('%H:%M:%S')} M15 start")
+				for i in instruments:
+					divergence(symbol=i, timeinterval=15, risk=rsk)
+					print(".", end="")
+				print(f"{datetime.now().strftime('%H:%M:%S')} M15 end")
+
+			elif minutesnow == '28' or minutesnow == '58':
+				print(f"{datetime.now().strftime('%H:%M:%S')} M15 start")
+				for i in instruments:
+					divergence(symbol=i, timeinterval=15, risk=rsk)
+					print(".", end="")
+				print(f"{datetime.now().strftime('%H:%M:%S')} M15 end")
 
 
-			print(f"{datetime.now().strftime('%H:%M:%S')} M30 start")
-			for i in instruments:
-				divergence(symbol=i, timeinterval=30, risk=rsk)
-			print(f"{datetime.now().strftime('%H:%M:%S')} M30 end")
+				print(f"{datetime.now().strftime('%H:%M:%S')} M30 start")
+				for i in instruments:
+					divergence(symbol=i, timeinterval=30, risk=rsk)
+					print(".", end="")
+				print(f"{datetime.now().strftime('%H:%M:%S')} M30 end")
+
+	except:
+		sleep(60)
+		bot.send_message(662482931, "Bot-1 stopped due an error")
 
 	sleep(10)
 
 # divergence('AAVEUSDT', 5, 1)
+
 

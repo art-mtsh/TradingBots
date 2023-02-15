@@ -2,9 +2,7 @@ import pandas
 import requests
 from datetime import datetime
 import calendar
-import telebot
-from screenshoter import sendScreen
-from time import sleep
+
 
 def dataget(symbol: str, timeinterval: int):
 
