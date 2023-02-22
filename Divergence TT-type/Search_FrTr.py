@@ -1,8 +1,10 @@
 import datetime
 import pandas
+import numpy as np
 import telebot
 from requests import get
 from Screenshoter_FrTr import screenshoter_FrTr
+import talib as ta
 
 # --- TELEGRAM ---
 
@@ -12,7 +14,7 @@ bot3 = telebot.TeleBot(TOKEN3)
 def search_FrTr(symbol: str, timeinterval: str, risk: float, filter: float):
 	# --- DATA ---
 
-	url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=100'
+	url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=800'
 	data1 = get(url_klines).json()
 
 	# --- K-LINE ---
@@ -48,78 +50,86 @@ def search_FrTr(symbol: str, timeinterval: str, risk: float, filter: float):
 	sma = sum(cClose) / len(cClose)
 
 	# --- VOLATILITY CALC ---
-	atr = (sum(sum([cHigh - cLow])) / len(cClose))
+	atr = (sum(sum([cHigh[700:] - cLow[700:]])) / len(cClose[700:]))
 	atrpercent = atr / (cClose[-1] / 100)
 	atrpercent = float('{:.2f}'.format(atrpercent))
 	# timeintimeframe = datetime.now().strftime('%H:') + str(int(datetime.now().strftime('%M')) // timeinterval * timeinterval)
 
-	# --- HIGH RANGE BAR ---
+	# --- LINEAR REGRESSION ANGLE ---
+	slope_angle = list(ta.LINEARREG_ANGLE(cClose, 20))
 
-	threeUps = []
-	threeDns = []
+	# --- DECISION MAKING ---
 
-	for i in range(0, len(cClose)-40):
-		if cClose[-i] < cClose[-i-1] < cClose[-i-2] > cClose[-i-3] > cClose[-i-4]:
-			threeUps.append(cHigh[-i-2])
-		if cClose[-i] > cClose[-i-1] > cClose[-i-2] < cClose[-i-3] < cClose[-i-4]:
-			threeDns.append((cLow[-i-2]))
+	# if len(threeUps) >=3 and cHigh[-1] < threeUps[0] < threeUps[1] < threeUps[2] and atrpercent > filter and cHigh[-1] < sma:
+	# if slope_angle[-1] < -15:
+	for i in range(2, 550):
+		point = -i-120
+		if max(cHigh[-i:-i-360:-1]) == cHigh[point]:
+			clean = 0
+			for b in range(2, -point):
+				if cHigh[-b] <= cHigh[point]:
+					clean += 1
+			distance_r = (cHigh[point] - cClose[-1]) / (cClose[-1] / 100)
+			distance_r = float('{:.2f}'.format(distance_r))
+			if clean == 0 and 1 > distance_r > 0 and atrpercent > 0.3:
+				bot3.send_message(662482931, f"🔵 {symbol} resistance in {distance_r}% at {cHigh[point]}, "
+											f"now: {datetime.datetime.now().strftime('%H:%M:%S')} ({timeinterval})"
+				
+											f"\nOpen parameters (risk: ${risk}):"
+											f"\n    №    | ATR, % |  $ Size  |  ₿ Size  | $ Fee"
+			
+											f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | $ {int(risk / (atrpercent / 100))}    "
+											f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100)) / cClose[-1]))}    "
+											f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) * 0.0008))}"
+			
+											f"\n2xATR |  {float('{:.2f}'.format(atrpercent * 2))}%  | $ {int(risk / (atrpercent * 2 / 100))}    "
+											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 2 / 100)) / cClose[-1]))}    "
+											f"fee {float('{:.2f}'.format(risk / (atrpercent * 2 / 100) * 0.0008))}"
+			
+											f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
+											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cClose[-1]))}    "
+											f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
+			
+											f"\nhttps://www.binance.com/en/futures/{symbol}/",
+								  disable_web_page_preview=True)
+				screenshoter_FrTr(timeinterval=timeinterval, symbol=symbol, direction="resistance", distancetoSR=distance_r, atr1 = atr, atr2 = atr * 2, atr3 = atr * 3, point=cHigh[point])
+				print(f'🔵 {symbol} distance to resistance: {distance_r}%, '
+					  f'now: {datetime.datetime.now().strftime("%H:%M:%S")} ({timeinterval})')
 
-	if len(threeUps) >=3 and cHigh[-1] < threeUps[0] < threeUps[1] < threeUps[2] and atrpercent > filter and cHigh[-1] < sma:
-		bot3.send_message(662482931, f"🔵 {symbol} is trending DOWN, "
-									f"ATR50: {float('{:.2f}'.format(atrpercent))}%, "
-									f"now: {datetime.datetime.now().strftime('%H:%M:%S')} ({timeinterval})"
-									f"\n1xATR: {float('{:.2f}'.format(atrpercent))}% ... "
-									f"2xATR: {float('{:.2f}'.format(atrpercent * 2))}% ... "
-									f"3xATR: {float('{:.2f}'.format(atrpercent * 3))}%\n"
+	# if len(threeDns) >=3 and cLow[-1] > threeDns[0] > threeDns[1] > threeDns[2] and atrpercent > filter and cLow[-1] > sma:
+	# if slope_angle[-1] > 15:
+	for i in range(2, 400):
+		point = -i - 120
+		if min(cLow[-i:-i - 360:-1]) == cLow[point]:
+			clean = 0
+			for b in range(2, -point):
+				if cLow[-b] <= cLow[point]:
+					clean += 1
+			distance_s = (cClose[-1] - cLow[point]) / (cClose[-1] / 100)
+			distance_s = float('{:.2f}'.format(distance_s))
+			if clean == 0 and 1 > distance_s > 0 and atrpercent > 0.3:
+				bot3.send_message(662482931, f"🔵 {symbol} support in {distance_s}% at {cLow[point]}, "
+											f"now: {datetime.datetime.now().strftime('%H:%M:%S')} ({timeinterval})"
+			
+											f"\nOpen parameters (risk: ${risk}):"
+											f"\n    №    | ATR, % |  $ Size  |  ₿ Size  | $ Fee"
+			
+											f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | $ {int(risk / (atrpercent / 100))}    "
+											f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100)) / cClose[-1]))}    "
+											f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) * 0.0008))}"
+			
+											f"\n2xATR |  {float('{:.2f}'.format(atrpercent * 2))}%  | $ {int(risk / (atrpercent * 2 / 100))}    "
+											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 2 / 100)) / cClose[-1]))}    "
+											f"fee {float('{:.2f}'.format(risk / (atrpercent * 2 / 100) * 0.0008))}"
+			
+											f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
+											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cClose[-1]))}    "
+											f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
+			
+											f"\nhttps://www.binance.com/en/futures/{symbol}/",
+								  disable_web_page_preview=True)
+				screenshoter_FrTr(timeinterval=timeinterval, symbol=symbol, direction="support", distancetoSR=distance_s, atr1 = atr, atr2 = atr * 2, atr3 = atr * 3, point=cLow[point])
+				print(f'🔵 {symbol} distance to support: {distance_s}%, '
+					  f'now: {datetime.datetime.now().strftime("%H:%M:%S")} ({timeinterval})')
 
-									f"\nOpen parameters (risk: ${risk}):"
-									f"\n    №    | ATR, % |  $ Size  |  ₿ Size  | $ Fee"
-
-									f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | $ {int(risk / (atrpercent / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100)) / cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) * 0.0008))}"
-
-									f"\n2xATR |  {float('{:.2f}'.format(atrpercent * 2))}%  | $ {int(risk / (atrpercent * 2 / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent * 2 / 100)) / cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent * 2 / 100) * 0.0008))}"
-
-									f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
-
-									f"\nhttps://www.binance.com/en/futures/{symbol}/",
-						  disable_web_page_preview=True)
-		screenshoter_FrTr(timeinterval=timeinterval, symbol=symbol, direction="SELL", atr1 = atr, atr2 = atr * 2, atr3 = atr * 3)
-		print(f'🔵 {symbol} is trending DOWN, '
-			  f'last 50 range: {float("{:.2f}".format(atrpercent))}%, '
-			  f'now: {datetime.datetime.now().strftime("%H:%M:%S")} ({timeinterval})')
-
-	if len(threeDns) >=3 and cLow[-1] > threeDns[0] > threeDns[1] > threeDns[2] and atrpercent > filter and cLow[-1] > sma:
-		bot3.send_message(662482931, f"🔵 {symbol} is trending UP, "
-									f"ATR50: {float('{:.2f}'.format(atrpercent))}%, "
-									f"now: {datetime.datetime.now().strftime('%H:%M:%S')} ({timeinterval})"
-									f"\n1xATR: {float('{:.2f}'.format(atrpercent))}% ... "
-									f"2xATR: {float('{:.2f}'.format(atrpercent * 2))}% ... "
-									f"3xATR: {float('{:.2f}'.format(atrpercent * 3))}%\n"
-
-									f"\nOpen parameters (risk: ${risk}):"
-									f"\n    №    | ATR, % |  $ Size  |  ₿ Size  | $ Fee"
-
-									f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | $ {int(risk / (atrpercent / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100)) / cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) * 0.0008))}"
-
-									f"\n2xATR |  {float('{:.2f}'.format(atrpercent * 2))}%  | $ {int(risk / (atrpercent * 2 / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent * 2 / 100)) / cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent * 2 / 100) * 0.0008))}"
-
-									f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
-									f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cClose[-1]))}    "
-									f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
-
-									f"\nhttps://www.binance.com/en/futures/{symbol}/",
-						  disable_web_page_preview=True)
-		screenshoter_FrTr(timeinterval=timeinterval, symbol=symbol, direction="BUY", atr1 = atr, atr2 = atr * 2, atr3 = atr * 3)
-		print(f'🔵 {symbol} is trending UP, '
-			  f'last 50 range: {float("{:.2f}".format(atrpercent))}%, '
-			  f'now: {datetime.datetime.now().strftime("%H:%M:%S")} ({timeinterval})')
+# search_FrTr(symbol='AAVEUSDT', timeinterval='1h', risk=10, filter=0.2)

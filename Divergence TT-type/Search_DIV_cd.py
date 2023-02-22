@@ -4,7 +4,7 @@ import telebot
 from multiprocessing import Process  # cpu_count
 import time
 from requests import get
-from Screenshoer_DIV import screenshoter_DIV
+from Screenshoer_DIV_cdabsolute import screenshoter_DIV
 
 # --- TELEGRAM ---
 
