@@ -55,7 +55,7 @@ instruments = ["1000LUNCBUSD",
 				   "CVXUSDT",
 				   "DARUSDT",
 				   "DASHUSDT",
-				   # "DEFIUSDT",
+				   "DEFIUSDT",
 				   "DENTUSDT",
 				   "DGBUSDT",
 				   "DOGEUSDT",
@@ -65,10 +65,10 @@ instruments = ["1000LUNCBUSD",
 				   "EGLDUSDT",
 				   "ENJUSDT",
 				   "ENSUSDT",
-				   # "EOSUSDT",
+				   "EOSUSDT",
 				   "ETCUSDT",
-				   # "ETHUSDT",
-				   # "ETHUSDT",
+				   "ETHUSDT",
+				   "ETHUSDT",
 				   "FETUSDT",
 				   "FILUSDT",
 				   "FLMUSDT",
@@ -138,7 +138,7 @@ instruments = ["1000LUNCBUSD",
 				   "SKLUSDT",
 				   "SNXUSDT",
 				   "SOLUSDT",
-				   # "SPELLUSDT",
+				   "SPELLUSDT",
 				   "STGUSDT",
 				   "STMXUSDT",
 				   "STORJUSDT",
@@ -154,12 +154,12 @@ instruments = ["1000LUNCBUSD",
 				   "VETUSDT",
 				   "WAVESUSDT",
 				   "WOOUSDT",
-				   # "XEMUSDT",
+				   "XEMUSDT",
 				   "XLMUSDT",
 				   "XMRUSDT",
 				   "XRPUSDT",
 				   "XTZUSDT",
-				   # "YFIUSDT",
+				   "YFIUSDT",
 				   "ZECUSDT",
 				   "ZENUSDT",
 				   "ZILUSDT",
@@ -216,7 +216,7 @@ def highRangeSearch_on_m5():
 
 		print(f"{datetime.datetime.now().strftime('%H:%M:%S')} High-range bar search on M5: start")
 		for i in instruments:
-			search_HR(symbol=i, timeinterval='5m', risk=risk, filter=2.5)
+			search_HR(symbol=i, timeinterval='5m', risk=risk, filter=2)
 			print(".", end="")
 		print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} High-range bar search on M5: stop")
 
@@ -255,11 +255,36 @@ def fractalTrendSearch_on_m1():
 	# if datetime.datetime.now().strftime('%M')[-1] == '3' or \
 	# 		datetime.datetime.now().strftime('%M')[-1] == '8':
 
-	print(f"{datetime.datetime.now().strftime('%H:%M:%S')} Fractal trend search on M1: start")
+	print(f"{datetime.datetime.now().strftime('%H:%M:%S')} Search for M1: start")
 	for i in instruments:
-		search_FrTr(symbol=i, timeinterval='1m', risk=risk, filter=0.5)
+		search_FrTr(symbol=i, timeinterval='1m', risk=risk, searchdistance=1.0)
 		print(".", end="")
-	print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} Fractal trend search on M1: stop")
+	print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} Search for M1: stop")
+
+def fractalTrendSearch_on_m5():
+
+	if datetime.datetime.now().strftime('%M')[-1] == '0' or \
+			datetime.datetime.now().strftime('%M')[-1] == '5':
+
+		print(f"{datetime.datetime.now().strftime('%H:%M:%S')} Search for M5: start")
+		for i in instruments:
+			search_FrTr(symbol=i, timeinterval='5m', risk=risk, searchdistance=1.5)
+			print(".", end="")
+		print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} Search for M5: stop")
+
+def fractalTrendSearch_on_m15():
+
+	if datetime.datetime.now().strftime('%M') == '30' or \
+		datetime.datetime.now().strftime('%M') == '00' or \
+		datetime.datetime.now().strftime('%M') == '15' or \
+		datetime.datetime.now().strftime('%M') == '45':
+
+		print(f"{datetime.datetime.now().strftime('%H:%M:%S')} Search for M15: start")
+		for i in instruments:
+			search_FrTr(symbol=i, timeinterval='15m', risk=risk, searchdistance=2)
+			print(".", end="")
+		print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} Search for M15: stop")
+
 
 def main():
 
@@ -272,32 +297,38 @@ def main():
 	# c = Process(target=divergenceSearch_on_m30)
 	# d = Process(target=divergenceSearch_on_h1)
 
-	# e = Process(target=highRangeSearch_on_m5)
-	# f = Process(target=highRangeSearch_on_m15)
-	# g = Process(target=highRangeSearch_on_m30)
-	# h = Process(target=highRangeSearch_on_1H)
+	e = Process(target=highRangeSearch_on_m5)
+	f = Process(target=highRangeSearch_on_m15)
+	g = Process(target=highRangeSearch_on_m30)
+	h = Process(target=highRangeSearch_on_1H)
 
-	j = Process(target=fractalTrendSearch_on_m1)
+	# j = Process(target=fractalTrendSearch_on_m1)
+	# k = Process(target=fractalTrendSearch_on_m5)
+	# l = Process(target=fractalTrendSearch_on_m15)
 
 	# a.start()
 	# b.start()
 	# c.start()
 	# d.start()
-	# e.start()
-	# f.start()
-	# g.start()
-	# h.start()
-	j.start()
+	e.start()
+	f.start()
+	g.start()
+	h.start()
+	# j.start()
+	# k.start()
+	# l.start()
 
 	# a.join()
 	# b.join()
 	# c.join()
 	# d.join()
-	# e.join()
-	# f.join()
-	# g.join()
-	# h.join()
-	j.join()
+	e.join()
+	f.join()
+	g.join()
+	h.join()
+	# j.join()
+	# k.join()
+	# l.join()
 
 	time2 = time.perf_counter()
 	time3 = time2-time1
@@ -309,15 +340,17 @@ def main():
 	# b.close()
 	# c.close()
 	# d.close()
-	# e.close()
-	# f.close()
-	# g.close()
-	# h.close()
-	j.close()
+	e.close()
+	f.close()
+	g.close()
+	h.close()
+	# j.close()
+	# k.close()
+	# l.close()
 
 if __name__ == "__main__":
 	while True:
 		main()
-		time.sleep(120)
+		time.sleep(20)
 
 # divergence("AAVEUSDT", 5, 10)

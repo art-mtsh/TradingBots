@@ -2,7 +2,7 @@ import datetime
 import pandas
 import telebot
 from requests import get
-from Screenshoter_FrTr import screenshoter_FrTr
+from Screenshoter_SR import screenshoter_FrTr
 import talib as ta
 
 # --- TELEGRAM ---
@@ -10,10 +10,10 @@ import talib as ta
 TOKEN3 = '6077915522:AAFuMUVPhw-cEaX4gCuPOa-chVwwMTpsUz8'
 bot3 = telebot.TeleBot(TOKEN3)
 
-def search_FrTr(symbol: str, timeinterval: str, risk: float, searchdistance: float):
+def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float):
 	# --- DATA ---
 
-	url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=800'
+	url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=1000'
 	data1 = get(url_klines).json()
 
 	# --- K-LINE ---
@@ -59,14 +59,12 @@ def search_FrTr(symbol: str, timeinterval: str, risk: float, searchdistance: flo
 
 	# --- DECISION MAKING ---
 
-	# if len(threeUps) >=3 and cHigh[-1] < threeUps[0] < threeUps[1] < threeUps[2] and atrpercent > filter and cHigh[-1] < sma:
-	# if slope_angle[-1] < -15:
-	for i in range(2, 550):
+	for i in range(2, 635):
 		point = -i-120
-		if max(cHigh[-i:-i-360:-1]) == cHigh[point]:
+		if max(cHigh[point:-i-360:-1]) == cHigh[point]:
 			clean = 0
 			for b in range(2, -point):
-				if cHigh[-b] <= cHigh[point]:
+				if cHigh[-b] >= cHigh[point] + cHigh[point] * 0.0015:
 					clean += 1
 			distance_r = abs((cHigh[point] - cClose[-1]) / (cClose[-1] / 100))
 			distance_r = float('{:.2f}'.format(distance_r))
@@ -94,15 +92,14 @@ def search_FrTr(symbol: str, timeinterval: str, risk: float, searchdistance: flo
 				screenshoter_FrTr(timeinterval=timeinterval, symbol=symbol, direction="resistance", distancetoSR=distance_r, atr1 = atr, atr2 = atr * 3, atr3 = atr * 5, point=cHigh[point])
 				print(f'{symbol} distance to resistance: {distance_r}%, '
 					  f'now: {datetime.datetime.now().strftime("%H:%M:%S")} ({timeinterval})')
+				break
 
-	# if len(threeDns) >=3 and cLow[-1] > threeDns[0] > threeDns[1] > threeDns[2] and atrpercent > filter and cLow[-1] > sma:
-	# if slope_angle[-1] > 15:
 	for i in range(2, 400):
 		point = -i - 120
-		if min(cLow[-i:-i - 360:-1]) == cLow[point]:
+		if min(cLow[point:-i - 360:-1]) == cLow[point]:
 			clean = 0
 			for b in range(2, -point):
-				if cLow[-b] <= cLow[point]:
+				if cLow[-b] <= cLow[point] - cLow[point] * 0.0015:
 					clean += 1
 			distance_s = abs((cClose[-1] - cLow[point]) / (cClose[-1] / 100))
 			distance_s = float('{:.2f}'.format(distance_s))
@@ -130,5 +127,6 @@ def search_FrTr(symbol: str, timeinterval: str, risk: float, searchdistance: flo
 				screenshoter_FrTr(timeinterval=timeinterval, symbol=symbol, direction="support", distancetoSR=distance_s, atr1 = atr, atr2 = atr * 3, atr3 = atr * 5, point=cLow[point])
 				print(f'{symbol} distance to support: {distance_s}%, '
 					  f'now: {datetime.datetime.now().strftime("%H:%M:%S")} ({timeinterval})')
+				break
 
 # search_FrTr(symbol='AAVEUSDT', timeinterval='1h', risk=10, filter=0.2)

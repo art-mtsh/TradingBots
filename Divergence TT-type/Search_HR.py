@@ -61,7 +61,7 @@ def search_HR(symbol: str, timeinterval: str, risk: float, filter: float):
 	# bullish = cClose[-1] > cClose[-2] > cClose[-3]
 	# bearish = cClose[-1] < cClose[-2] < cClose[-3]
 
-	if lastbarperc > filter and atrpercent > 0.8 and (cClose[-2] > cOpen[-2] > sma or cClose[-2] < cOpen[-2] < sma):
+	if lastbarperc > filter and atrpercent > 0.0 and (cClose[-2] > cOpen[-2] > sma or cClose[-2] < cOpen[-2] < sma):
 		bot2.send_message(662482931, f"🟡 {symbol} last range: {float('{:.2f}'.format(lastbarperc))}%, "
 									f"ATR50: {float('{:.2f}'.format(atrpercent))}%, "
 									f"now: {datetime.datetime.now().strftime('%H:%M:%S')} ({timeinterval})"
