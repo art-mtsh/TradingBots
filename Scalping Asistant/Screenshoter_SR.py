@@ -46,7 +46,7 @@ def screenshoter_FrTr(timeinterval:str, symbol:str, direction: str, distancetoSR
 	cClose = df1['cClose'].to_numpy()
 
 	# --- PLOTS ---
-	plt.suptitle(symbol + ' in ' + str(distancetoSR) + '% to ' + direction + ' at ' + datetime.datetime.now().strftime('%H:%M:%S') + f' ({timeinterval})')
+	plt.suptitle(symbol + ' in ' + str(distancetoSR) + '% to ' + direction + ' at ' + str(point) + ' at ' + datetime.datetime.now().strftime('%H:%M:%S') + f' ({timeinterval})')
 
 	stock_prices = df1
 	up = stock_prices[stock_prices.cClose >= stock_prices.cOpen]
@@ -79,9 +79,9 @@ def screenshoter_FrTr(timeinterval:str, symbol:str, direction: str, distancetoSR
 	# S/R price
 	px = [0, 150]
 	py = [point, point]
-	plt.plot(px, py, color='darkorange', linewidth=0.9)
+	plt.plot(px, py, color='black', linewidth=1.3)
 
-	plt.text(x=0, y=point, s=str(point), fontdict=None, fontsize='small', color='darkorange')
+	plt.text(x=0, y=point*1.0005, s=str(point), fontdict=None, fontsize='small', color='black')
 
 	# plt.show()
 

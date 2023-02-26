@@ -10,7 +10,7 @@ import talib as ta
 TOKEN3 = '6077915522:AAFuMUVPhw-cEaX4gCuPOa-chVwwMTpsUz8'
 bot3 = telebot.TeleBot(TOKEN3)
 
-def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float):
+def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float, atrfilter: float):
 	# --- DATA ---
 
 	url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=1000'
@@ -49,7 +49,7 @@ def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float
 	sma = sum(cClose) / len(cClose)
 
 	# --- VOLATILITY CALC ---
-	atr = (sum(sum([cHigh[750:] - cLow[750:]])) / len(cClose[750:]))
+	atr = (sum(sum([cHigh[950:] - cLow[950:]])) / len(cClose[950:]))
 	atrpercent = atr / (cClose[-1] / 100)
 	atrpercent = float('{:.2f}'.format(atrpercent))
 	# timeintimeframe = datetime.now().strftime('%H:') + str(int(datetime.now().strftime('%M')) // timeinterval * timeinterval)
@@ -63,12 +63,18 @@ def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float
 		point = -i-120
 		if max(cHigh[point:-i-360:-1]) == cHigh[point]:
 			clean = 0
+			doubletouchup = 0
 			for b in range(2, -point):
-				if cHigh[-b] >= cHigh[point] + cHigh[point] * 0.0015:
+				if cHigh[-b] > cHigh[point] + cHigh[point] * 0.0015:
 					clean += 1
+
+			for b in range(20, -point - 20):
+				if cHigh[point] + cHigh[point] * 0.0015 >= cHigh[-b] >= cHigh[point] - cHigh[point] * 0.0015:
+					doubletouchup += 1
+
 			distance_r = abs((cHigh[point] - cClose[-1]) / (cClose[-1] / 100))
 			distance_r = float('{:.2f}'.format(distance_r))
-			if clean == 0 and searchdistance > distance_r > 0 and atrpercent > 0.2:
+			if clean == 0 and searchdistance > distance_r > 0 and atrpercent > atrfilter and doubletouchup > 0:
 				bot3.send_message(662482931, f"🔵 {symbol} resistance in {distance_r}% at {cHigh[point]}, "
 											f"now: {datetime.datetime.now().strftime('%H:%M:%S')} ({timeinterval})"
 				
@@ -78,14 +84,22 @@ def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float
 											f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | $ {int(risk / (atrpercent / 100))}    "
 											f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100)) / cHigh[point]))}    "
 											f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) * 0.0008))}"
+											 
+											f"\nRISK/5 |  1.00%  | $ {int(risk / (1 / 100) / 5)}    "
+											f"₿ {int((risk / (1 / 100)) / cHigh[point] / 5)}    "
+											f"fee {float('{:.2f}'.format(risk / (1 / 100) * 0.0008 / 5))}"
+
+											f"\nRISK    |  1.00%  | $ {int(risk / (1 / 100))}    "
+											f"₿ {int((risk / (1 / 100)) / cHigh[point])}    "
+											f"fee {float('{:.2f}'.format(risk / (1 / 100) * 0.0008))}"
 			
-											f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
-											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cHigh[point]))}    "
-											f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
-			
-											f"\n5xATR |  {float('{:.2f}'.format(atrpercent * 5))}%  | $ {int(risk / (atrpercent * 5 / 100))}    "
-											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 5 / 100)) / cHigh[point]))}    "
-											f"fee {float('{:.2f}'.format(risk / (atrpercent * 5 / 100) * 0.0008))}"
+											# f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
+											# f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cHigh[point]))}    "
+											# f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
+											# 
+											# f"\n5xATR |  {float('{:.2f}'.format(atrpercent * 5))}%  | $ {int(risk / (atrpercent * 5 / 100))}    "
+											# f"₿ {float('{:.2f}'.format((risk / (atrpercent * 5 / 100)) / cHigh[point]))}    "
+											# f"fee {float('{:.2f}'.format(risk / (atrpercent * 5 / 100) * 0.0008))}"
 			
 											f"\nhttps://www.binance.com/en/futures/{symbol}/",
 								  disable_web_page_preview=True)
@@ -94,16 +108,21 @@ def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float
 					  f'now: {datetime.datetime.now().strftime("%H:%M:%S")} ({timeinterval})')
 				break
 
-	for i in range(2, 400):
+	for i in range(2, 635):
 		point = -i - 120
 		if min(cLow[point:-i - 360:-1]) == cLow[point]:
 			clean = 0
+			doubletouchdn = 0
 			for b in range(2, -point):
-				if cLow[-b] <= cLow[point] - cLow[point] * 0.0015:
+				if cLow[-b] < cLow[point] - cLow[point] * 0.0015:
 					clean += 1
+
+			for b in range(20, -point - 20):
+				if cLow[point] - cLow[point] * 0.0015 <= cLow[-b] <= cLow[point] + cLow[point] * 0.0015:
+					doubletouchdn += 1
 			distance_s = abs((cClose[-1] - cLow[point]) / (cClose[-1] / 100))
 			distance_s = float('{:.2f}'.format(distance_s))
-			if clean == 0 and searchdistance > distance_s > 0 and atrpercent > 0.2:
+			if clean == 0 and searchdistance > distance_s > 0 and atrpercent > atrfilter and doubletouchdn > 0:
 				bot3.send_message(662482931, f"🔵 {symbol} support in {distance_s}% at {cLow[point]}, "
 											f"now: {datetime.datetime.now().strftime('%H:%M:%S')} ({timeinterval})"
 			
@@ -113,14 +132,22 @@ def search_SR(symbol: str, timeinterval: str, risk: float, searchdistance: float
 											f"\n1xATR |  {float('{:.2f}'.format(atrpercent))}%  | $ {int(risk / (atrpercent / 100))}    "
 											f"₿ {float('{:.2f}'.format((risk / (atrpercent / 100)) / cLow[point]))}    "
 											f"fee {float('{:.2f}'.format(risk / (atrpercent / 100) * 0.0008))}"
-			
-											f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
-											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cLow[point]))}    "
-											f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
-			
-											f"\n5xATR |  {float('{:.2f}'.format(atrpercent * 5))}%  | $ {int(risk / (atrpercent * 5 / 100))}    "
-											f"₿ {float('{:.2f}'.format((risk / (atrpercent * 5 / 100)) / cLow[point]))}    "
-											f"fee {float('{:.2f}'.format(risk / (atrpercent * 5 / 100) * 0.0008))}"
+											 
+											f"\nRISK/5 |  1.00%  | $ {int(risk / (1 / 100) / 5)}    "
+											f"₿ {int((risk / (1 / 100)) / cLow[point] / 5)}    "
+											f"fee {float('{:.2f}'.format(risk / (1 / 100) * 0.0008 / 5))}"
+											 
+											f"\nRISK    |  1.00%  | $ {int(risk / (1 / 100))}    "
+											f"₿ {int((risk / (1 / 100)) / cLow[point])}    "
+											f"fee {float('{:.2f}'.format(risk / (1 / 100) * 0.0008))}"
+											 
+											# f"\n3xATR |  {float('{:.2f}'.format(atrpercent * 3))}%  | $ {int(risk / (atrpercent * 3 / 100))}    "
+											# f"₿ {float('{:.2f}'.format((risk / (atrpercent * 3 / 100)) / cLow[point]))}    "
+											# f"fee {float('{:.2f}'.format(risk / (atrpercent * 3 / 100) * 0.0008))}"
+											# 
+											# f"\n5xATR |  {float('{:.2f}'.format(atrpercent * 5))}%  | $ {int(risk / (atrpercent * 5 / 100))}    "
+											# f"₿ {float('{:.2f}'.format((risk / (atrpercent * 5 / 100)) / cLow[point]))}    "
+											# f"fee {float('{:.2f}'.format(risk / (atrpercent * 5 / 100) * 0.0008))}"
 			
 											f"\nhttps://www.binance.com/en/futures/{symbol}/",
 								  disable_web_page_preview=True)

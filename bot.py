@@ -9,4 +9,6 @@ from requests import get
 TOKEN3 = '6077915522:AAFuMUVPhw-cEaX4gCuPOa-chVwwMTpsUz8'
 bot3 = telebot.TeleBot(TOKEN3)
 
-bot3.send_message(662482931, "1234124123")
+# bot3.send_message(662482931, "1234124123")
+
+

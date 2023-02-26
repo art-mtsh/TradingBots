@@ -150,7 +150,7 @@ instruments = ["1000LUNCBUSD",
 				   "VETUSDT",
 				   "WAVESUSDT",
 				   "WOOUSDT",
-				   "XEMUSDT",
+				   # "XEMUSDT",
 				   "XLMUSDT",
 				   "XMRUSDT",
 				   "XRPUSDT",
@@ -169,7 +169,7 @@ def SRSearch_on_m1():
 
 	print(f"{datetime.datetime.now().strftime('%H:%M:%S')} Search for M1: start")
 	for i in instruments:
-		search_SR(symbol=i, timeinterval='1m', risk=risk, searchdistance=0.5)
+		search_SR(symbol=i, timeinterval='1m', risk=risk, searchdistance=1, atrfilter=0.1)
 		print(".", end="")
 	print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} Search for M1: stop")
 
@@ -180,7 +180,7 @@ def SRSearch_on_m5():
 
 	print(f"{datetime.datetime.now().strftime('%H:%M:%S')} Search for M5: start")
 	for i in instruments:
-		search_SR(symbol=i, timeinterval='5m', risk=risk, searchdistance=0.5)
+		search_SR(symbol=i, timeinterval='5m', risk=risk, searchdistance=1, atrfilter=0.1)
 		print(".", end="")
 	print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} Search for M5: stop")
 
@@ -193,7 +193,7 @@ def SRSearch_on_m15():
 
 	print(f"{datetime.datetime.now().strftime('%H:%M:%S')} Search for M15: start")
 	for i in instruments:
-		search_SR(symbol=i, timeinterval='15m', risk=risk, searchdistance=0.5)
+		search_SR(symbol=i, timeinterval='15m', risk=risk, searchdistance=1, atrfilter=0.1)
 		print(".", end="")
 	print(f"\n{datetime.datetime.now().strftime('%H:%M:%S')} Search for M15: stop")
 
