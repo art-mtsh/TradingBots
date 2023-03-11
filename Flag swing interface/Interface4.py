@@ -18,13 +18,13 @@ def refresh_table():
 	time1 = time.perf_counter()
 	print(f"Starting processes...at {datetime.datetime.now().strftime('%H:%M:%S')}")
 
-	table_data = get_data_table(searchfilter=1)
+	table_data = get_data_table(searchfilter=0.2)
 	num_rows = len(table_data)
 	table.setRowCount(num_rows)
 
-	num_cols = 4
+	num_cols = 5
 	table.setColumnCount(num_cols)
-	headers = ["Timeframe", "Symbol", "ATR %", "Angle %"]
+	headers = ["Timeframe", "Symbol", "ATR %", "30 candles range", "Angle %"]
 	table.setHorizontalHeaderLabels(headers)
 	header_font = QFont("Calibri Light", 12, QFont.Bold)
 	table.horizontalHeader().setFont(header_font)
@@ -39,7 +39,7 @@ def refresh_table():
 			table.setColumnWidth(j, 200)
 
 	table.sortByColumn(3, Qt.DescendingOrder)
-	table.setFixedWidth(840)
+	table.setFixedWidth(1050)
 	table.show()
 
 	time2 = time.perf_counter()

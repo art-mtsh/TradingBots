@@ -2,170 +2,13 @@ import pandas as pd
 from requests import get
 from typing import List
 from multiprocessing import Process, Manager
-
-
-instruments1 = ["1000LUNCBUSD",
-                   "1000LUNCUSDT",
-                   "1000SHIBUSDT",
-                   "1000XECUSDT",
-                   "1INCHUSDT",
-                   "AAVEUSDT",
-                   "ADAUSDT",
-                   "ALGOUSDT",
-                   "ALICEUSDT",
-                   "ALPHAUSDT",
-                   "ANKRUSDT",
-                   "ANTUSDT",
-                   "APEUSDT",
-                   "API3USDT",
-                   "APTUSDT",
-                   "ARPAUSDT",
-                   "ARUSDT",
-                   "ATAUSDT",
-                   "ATOMUSDT",
-                   "AUDIOUSDT",
-                   "AVAXUSDT",
-                   "AXSUSDT",
-                   "BAKEUSDT",
-                   "BALUSDT",
-                   "BANDUSDT",
-                   "BATUSDT",
-                   "BCHUSDT",
-                   "BELUSDT",
-                   "BLUEBIRDUSDT",
-                   "BLZUSDT",
-                   "BNBUSDT",
-                   # "BNXUSDT",
-                   # "BTCDOMUSDT",
-                   # "BTCUSDT",
-                   # "BTCUSDT",
-                   "C98USDT",
-                   "CELOUSDT",
-                   "CELRUSDT",
-                   "CHRUSDT",
-                   "CHZUSDT",
-                   "COMPUSDT",
-                   "COTIUSDT",
-                   "CRVUSDT",
-                   "CTKUSDT",
-                   "CTSIUSDT",
-                   "CVXUSDT",
-                   "DARUSDT",
-                   "DASHUSDT",
-                   # "DEFIUSDT",
-                    "DENTUSDT"]
-instruments2 = ["DGBUSDT",
-                   "DOGEUSDT",
-                   "DOTUSDT",
-                   "DUSKUSDT",
-                   "DYDXUSDT",
-                   "EGLDUSDT",
-                   "ENJUSDT",
-                   "ENSUSDT",
-                   # "EOSUSDT",
-                   "ETCUSDT",
-                   # "ETHUSDT",
-                   # "ETHUSDT",
-                   "FETUSDT",
-                   "FILUSDT",
-                   "FLMUSDT",
-                   "FLOWUSDT",
-                   "FOOTBALLUSDT",
-                   "FTMUSDT",
-                   "FXSUSDT",
-                   "GALAUSDT",
-                   "GALUSDT",
-                   "GMTUSDT",
-                   "GRTUSDT",
-                   "GTCUSDT",
-                   "HBARUSDT",
-                   "HIGHUSDT",
-                   "HNTUSDT",
-                   "HOOKUSDT",
-                   "HOTUSDT",
-                   "ICPUSDT",
-                   "ICXUSDT",
-                   "IMXUSDT",
-                   "INJUSDT",
-                   "IOSTUSDT",
-                   "IOTAUSDT",
-                   "IOTXUSDT",
-                   "JASMYUSDT",
-                   "KAVAUSDT",
-                   "KLAYUSDT"]
-instruments3 = ["KNCUSDT",
-                   "KSMUSDT",
-                   "LDOUSDT",
-                   "LINAUSDT",
-                   "LINKUSDT",
-                   "LITUSDT",
-                   "LPTUSDT",
-                   "LRCUSDT",
-                   "LTCUSDT",
-                   "LUNA2USDT",
-                   "MAGICUSDT",
-                   "MANAUSDT",
-                   "MASKUSDT",
-                   "MATICUSDT",
-                   "MINAUSDT",
-                   "MKRUSDT",
-                   "MTLUSDT",
-                   "NEARUSDT",
-                   "NEOUSDT",
-                   "NKNUSDT",
-                   "OCEANUSDT",
-                   "OGNUSDT",
-                   "OMGUSDT",
-                   "ONEUSDT",
-                   "ONTUSDT",
-                   "OPUSDT",
-                   "PEOPLEUSDT",
-                   "QNTUSDT",
-                   "QTUMUSDT",
-                   "REEFUSDT",
-                   "RENUSDT",
-                   "RLCUSDT",
-                   "RNDRUSDT",
-                   "ROSEUSDT",
-                   "RSRUSDT"]
-instruments4 = ["RUNEUSDT",
-                   "RVNUSDT",
-                   "SANDUSDT",
-                   "SFPUSDT",
-                   "SKLUSDT",
-                   "SNXUSDT",
-                   "SOLUSDT",
-                   # "SPELLUSDT",
-                   "STGUSDT",
-                   "STMXUSDT",
-                   "STORJUSDT",
-                   "SUSHIUSDT",
-                   "SXPUSDT",
-                   # "SSVUSDT",
-                   "THETAUSDT",
-                   "TOMOUSDT",
-                   "TRBUSDT",
-                   "TRXUSDT",
-                   "TUSDT",
-                   "UNFIUSDT",
-                   "UNIUSDT",
-                   "VETUSDT",
-                   "WAVESUSDT",
-                   "WOOUSDT",
-                   # "XEMUSDT",
-                   "XLMUSDT",
-                   "XMRUSDT",
-                   "XRPUSDT",
-                   "XTZUSDT",
-                   # "YFIUSDT",
-                   "ZECUSDT",
-                   "ZENUSDT",
-                   "ZILUSDT",
-                   "ZRXUSDT"]
+from instruments import section_1, section_2, section_3, section_4
 
 # --- FUNCTION ---
 def screensaver(symbol: str, timeinterval: str) -> List:
     # --- DATA ---
+    global atrper, closestdistance, closestlevel, closesttype
+
     url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=1000'
     data1 = get(url_klines).json()
 
@@ -190,169 +33,172 @@ def screensaver(symbol: str, timeinterval: str) -> List:
     df1['cClose'] = df1['cClose'].astype(float)
     df1['cVolume'] = df1['cVolume'].astype(float)
 
-    # Lists:
-    cOpen = df1['cOpen'].to_numpy()
-    cHigh = df1['cHigh'].to_numpy()
-    cLow = df1['cLow'].to_numpy()
-    cClose = df1['cClose'].to_numpy()
-    cVolume = df1['cVolume'].to_numpy()
-    atr = (sum(sum([cHigh[950:] - cLow[950:]])) / len(cClose[950:]))
-    atrper = atr / (cClose[-1] / 100)
-    atrper = float('{:.2f}'.format(atrper))
 
-    distancetores = 0
-    respoint = 0
+    try:
 
-    for i in range(2, 890):
-        point = -i-50
-        if max(cHigh[point:point - 50:-1]) == cHigh[point]:
-            clean = 0
-            doubletouchup = 0
-            for b in range(2, -point):
-                if cHigh[-b] > cHigh[point] + cHigh[point] * 0.001:
-                    clean += 1
+        # Lists:
+        cOpen = df1['cOpen'].to_numpy()
+        cHigh = df1['cHigh'].to_numpy()
+        cLow = df1['cLow'].to_numpy()
+        cClose = df1['cClose'].to_numpy()
+        cVolume = df1['cVolume'].to_numpy()
+        atr = (sum(sum([cHigh[950:] - cLow[950:]])) / len(cClose[950:]))
+        atrper = atr / (cClose[-1] / 100)
+        atrper = float('{:.2f}'.format(atrper))
 
-            for b in range(20, -point - 20):
-                if cHigh[point] + cHigh[point] * 0.001 >= cHigh[-b] >= cHigh[point] - cHigh[point] * 0.001:
-                    doubletouchup += 1
+        distancetores = 0
+        respoint = 0
 
-            if clean == 0 and doubletouchup > 1:
-                distancetores += (cHigh[point] - cClose[-1]) / (cClose[-1] / 100)
-                respoint += cHigh[point]
-                break
+        for i in range(2, 890):
+            point = -i-50
+            if max(cHigh[point:point - 50:-1]) == cHigh[point]:
+                clean = 0
+                doubletouchup = 0
+                for b in range(2, -point):
+                    if cHigh[-b] > cHigh[point] + cHigh[point] * 0.001:
+                        clean += 1
 
-    distancetosup = 0
-    suppoint = 0
+                for b in range(20, -point - 20):
+                    if cHigh[point] + cHigh[point] * 0.001 >= cHigh[-b] >= cHigh[point] - cHigh[point] * 0.001:
+                        doubletouchup += 1
 
-    for i in range(2, 890):
-        point = -i - 50
-        if min(cLow[point:point - 50:-1]) == cLow[point]:
-            clean = 0
-            doubletouchdn = 0
-            for b in range(2, -point):
-                if cLow[-b] < cLow[point] - cLow[point] * 0.001:
-                    clean += 1
+                if clean == 0 and doubletouchup > 1:
+                    distancetores += (cHigh[point] - cClose[-1]) / (cClose[-1] / 100)
+                    respoint += cHigh[point]
+                    break
 
-            for b in range(20, -point - 20):
-                if cLow[point] - cLow[point] * 0.001 <= cLow[-b] <= cLow[point] + cLow[point] * 0.001:
-                    doubletouchdn += 1
+        distancetosup = 0
+        suppoint = 0
 
-            if clean == 0 and doubletouchdn > 1:
-                distancetosup += (cClose[-1] - cLow[point]) / (cClose[-1] / 100)
-                suppoint += cLow[point]
-                break
+        for i in range(2, 890):
+            point = -i - 50
+            if min(cLow[point:point - 50:-1]) == cLow[point]:
+                clean = 0
+                doubletouchdn = 0
+                for b in range(2, -point):
+                    if cLow[-b] < cLow[point] - cLow[point] * 0.001:
+                        clean += 1
 
-    distancetores = float('{:.2f}'.format(distancetores))
-    distancetosup = float('{:.2f}'.format(distancetosup))
+                for b in range(20, -point - 20):
+                    if cLow[point] - cLow[point] * 0.001 <= cLow[-b] <= cLow[point] + cLow[point] * 0.001:
+                        doubletouchdn += 1
 
-    closestdistance: float
-    closestlevel: float
-    closesttype: str
+                if clean == 0 and doubletouchdn > 1:
+                    distancetosup += (cClose[-1] - cLow[point]) / (cClose[-1] / 100)
+                    suppoint += cLow[point]
+                    break
 
-    if distancetores != 0 and distancetosup != 0:
-        if distancetores < distancetosup:
+        distancetores = float('{:.2f}'.format(distancetores))
+        distancetosup = float('{:.2f}'.format(distancetosup))
+
+
+        if distancetores != 0 and distancetosup != 0:
+            if distancetores < distancetosup:
+                closestdistance = distancetores
+                closestlevel = respoint
+                closesttype = "resistance"
+            else:
+                closestdistance = distancetosup
+                closestlevel = suppoint
+                closesttype = "support"
+        elif distancetores != 0 and distancetosup == 0:
             closestdistance = distancetores
             closestlevel = respoint
             closesttype = "resistance"
-        else:
+        elif distancetores == 0 and distancetosup != 0:
             closestdistance = distancetosup
             closestlevel = suppoint
             closesttype = "support"
-    elif distancetores != 0 and distancetosup == 0:
-        closestdistance = distancetores
-        closestlevel = respoint
-        closesttype = "resistance"
-    elif distancetores == 0 and distancetosup != 0:
-        closestdistance = distancetosup
-        closestlevel = suppoint
-        closesttype = "support"
-    else:
-        closestdistance = 0
-        closestlevel = 0
-        closesttype = "none"
+        else:
+            closestdistance = 0
+            closestlevel = 0
+            closesttype = "none"
+
+    except:
+        print(f"Error on: {symbol}")
 
     return [timeinterval, symbol, atrper, closestdistance, closestlevel, closesttype]
 
 def s_on_m11(my_list, atrfilter, searchfilter):
-    for i in instruments1:
+    for i in section_1:
         data = screensaver(i, '1m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m12(my_list, atrfilter, searchfilter):
-    for i in instruments2:
+    for i in section_2:
         data = screensaver(i, '1m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m13(my_list, atrfilter, searchfilter):
-    for i in instruments3:
+    for i in section_3:
         data = screensaver(i, '1m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m14(my_list, atrfilter, searchfilter):
-    for i in instruments4:
+    for i in section_4:
         data = screensaver(i, '1m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 
 def s_on_m51(my_list, atrfilter, searchfilter):
-    for i in instruments1:
+    for i in section_1:
         data = screensaver(i, '5m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m52(my_list, atrfilter, searchfilter):
-    for i in instruments2:
+    for i in section_2:
         data = screensaver(i, '5m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m53(my_list, atrfilter, searchfilter):
-    for i in instruments3:
+    for i in section_3:
         data = screensaver(i, '5m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m54(my_list, atrfilter, searchfilter):
-    for i in instruments4:
+    for i in section_4:
         data = screensaver(i, '5m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 
 def s_on_m151(my_list, atrfilter, searchfilter):
-    for i in instruments1:
+    for i in section_1:
         data = screensaver(i, '15m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m152(my_list, atrfilter, searchfilter):
-    for i in instruments2:
+    for i in section_2:
         data = screensaver(i, '15m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m153(my_list, atrfilter, searchfilter):
-    for i in instruments3:
+    for i in section_3:
         data = screensaver(i, '15m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 def s_on_m154(my_list, atrfilter, searchfilter):
-    for i in instruments4:
+    for i in section_4:
         data = screensaver(i, '15m')
         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
             my_list.append(data)
 
 # def s_on_m601(my_list, atrfilter, searchfilter):
-#     for i in instruments1:
+#     for i in section_1:
 #         data = screensaver(i, '1h')
 #         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
 #             my_list.append(data)
 # def s_on_m602(my_list, atrfilter, searchfilter):
-#     for i in instruments2:
+#     for i in section_2:
 #         data = screensaver(i, '1h')
 #         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
 #             my_list.append(data)
 # def s_on_m603(my_list, atrfilter, searchfilter):
-#     for i in instruments3:
+#     for i in section_3:
 #         data = screensaver(i, '1h')
 #         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
 #             my_list.append(data)
 # def s_on_m604(my_list, atrfilter, searchfilter):
-#     for i in instruments4:
+#     for i in section_4:
 #         data = screensaver(i, '1h')
 #         if data[-4] >= atrfilter and searchfilter >= data[-3] > 0:
 #             my_list.append(data)

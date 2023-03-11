@@ -22,7 +22,7 @@ def refresh_table():
 
 	num_cols = 6
 	table.setColumnCount(num_cols)
-	headers = ["Timeframe", "Symbol", "ATR %", "To level %", "Level position", "Level type"]
+	headers = ["TF", "Symbol", "ATR %", "To level %", "Level", "Level type"]
 	table.setHorizontalHeaderLabels(headers)
 	header_font = QFont("Calibri Light", 12, QFont.Bold)
 	table.horizontalHeader().setFont(header_font)
@@ -36,8 +36,15 @@ def refresh_table():
 			table.setItem(i, j, item)
 			table.setColumnWidth(j, 150)
 
+	table.setColumnWidth(0, 50)
+	table.setColumnWidth(1, 150)
+	table.setColumnWidth(2, 100)
+	table.setColumnWidth(3, 100)
+	table.setColumnWidth(4, 100)
+	table.setColumnWidth(5, 100)
+
 	table.sortByColumn(3, Qt.AscendingOrder)
-	table.setFixedWidth(930)
+	table.setFixedWidth(645)
 	table.show()
 
 	time2 = time.perf_counter()

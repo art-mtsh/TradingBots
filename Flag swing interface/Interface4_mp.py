@@ -4,166 +4,7 @@ from typing import List
 from multiprocessing import Process, Manager
 import telebot
 import datetime
-
-instruments1 = ["1000LUNCBUSD",
-                "1000LUNCUSDT",
-                "1000SHIBUSDT",
-                "1000XECUSDT",
-                "1INCHUSDT",
-                "AAVEUSDT",
-                "ADAUSDT",
-                "ALGOUSDT",
-                "ALICEUSDT",
-                "ALPHAUSDT",
-                "ANKRUSDT",
-                "ANTUSDT",
-                "APEUSDT",
-                "API3USDT",
-                "APTUSDT",
-                "ARPAUSDT",
-                "ARUSDT",
-                "ATAUSDT",
-                "ATOMUSDT",
-                "AUDIOUSDT",
-                "AVAXUSDT",
-                "AXSUSDT",
-                "BAKEUSDT",
-                "BALUSDT",
-                "BANDUSDT",
-                "BATUSDT",
-                "BCHUSDT",
-                "BELUSDT",
-                "BLUEBIRDUSDT",
-                "BLZUSDT",
-                "BNBUSDT",
-                # "BNXUSDT",
-                # "BTCDOMUSDT",
-                # "BTCUSDT",
-                # "BTCUSDT",
-                "C98USDT",
-                "CELOUSDT",
-                "CELRUSDT",
-                "CHRUSDT",
-                "CHZUSDT",
-                "COMPUSDT",
-                "COTIUSDT",
-                "CRVUSDT",
-                "CTKUSDT",
-                "CTSIUSDT",
-                "CVXUSDT",
-                "DARUSDT",
-                "DASHUSDT",
-                # "DEFIUSDT",
-                "DENTUSDT"]
-instruments2 = ["DGBUSDT",
-                "DOGEUSDT",
-                "DOTUSDT",
-                "DUSKUSDT",
-                "DYDXUSDT",
-                "EGLDUSDT",
-                "ENJUSDT",
-                "ENSUSDT",
-                # "EOSUSDT",
-                "ETCUSDT",
-                # "ETHUSDT",
-                # "ETHUSDT",
-                "FETUSDT",
-                "FILUSDT",
-                "FLMUSDT",
-                "FLOWUSDT",
-                "FOOTBALLUSDT",
-                "FTMUSDT",
-                "FXSUSDT",
-                "GALAUSDT",
-                "GALUSDT",
-                "GMTUSDT",
-                "GRTUSDT",
-                "GTCUSDT",
-                "HBARUSDT",
-                "HIGHUSDT",
-                "HNTUSDT",
-                "HOOKUSDT",
-                "HOTUSDT",
-                "ICPUSDT",
-                "ICXUSDT",
-                "IMXUSDT",
-                "INJUSDT",
-                "IOSTUSDT",
-                "IOTAUSDT",
-                "IOTXUSDT",
-                "JASMYUSDT",
-                "KAVAUSDT",
-                "KLAYUSDT"]
-instruments3 = ["KNCUSDT",
-                "KSMUSDT",
-                "LDOUSDT",
-                "LINAUSDT",
-                "LINKUSDT",
-                "LITUSDT",
-                "LPTUSDT",
-                "LRCUSDT",
-                "LTCUSDT",
-                "LUNA2USDT",
-                "MAGICUSDT",
-                "MANAUSDT",
-                "MASKUSDT",
-                "MATICUSDT",
-                "MINAUSDT",
-                "MKRUSDT",
-                "MTLUSDT",
-                "NEARUSDT",
-                "NEOUSDT",
-                "NKNUSDT",
-                "OCEANUSDT",
-                "OGNUSDT",
-                "OMGUSDT",
-                "ONEUSDT",
-                "ONTUSDT",
-                "OPUSDT",
-                "PEOPLEUSDT",
-                "QNTUSDT",
-                "QTUMUSDT",
-                "REEFUSDT",
-                "RENUSDT",
-                "RLCUSDT",
-                "RNDRUSDT",
-                "ROSEUSDT",
-                "RSRUSDT"]
-instruments4 = ["RUNEUSDT",
-                "RVNUSDT",
-                "SANDUSDT",
-                "SFPUSDT",
-                "SKLUSDT",
-                "SNXUSDT",
-                "SOLUSDT",
-                # "SPELLUSDT",
-                "STGUSDT",
-                "STMXUSDT",
-                "STORJUSDT",
-                "STXUSDT",
-                "SUSHIUSDT",
-                "SXPUSDT",
-                # "SSVUSDT",
-                "THETAUSDT",
-                "TOMOUSDT",
-                "TRBUSDT",
-                "TRXUSDT",
-                "TUSDT",
-                "UNFIUSDT",
-                "UNIUSDT",
-                "VETUSDT",
-                "WAVESUSDT",
-                "WOOUSDT",
-                "XEMUSDT",
-                "XLMUSDT",
-                "XMRUSDT",
-                "XRPUSDT",
-                "XTZUSDT",
-                # "YFIUSDT",
-                "ZECUSDT",
-                "ZENUSDT",
-                "ZILUSDT",
-                "ZRXUSDT"]
+from instruments import section_1, section_2, section_3, section_4
 
 TOKEN3 = '6077915522:AAFuMUVPhw-cEaX4gCuPOa-chVwwMTpsUz8'
 bot3 = telebot.TeleBot(TOKEN3)
@@ -201,34 +42,6 @@ def screensaver(symbol: str, timeinterval: str) -> List:
     cLow = df1['cLow'].to_numpy()
     cClose = df1['cClose'].to_numpy()
     cVolume = df1['cVolume'].to_numpy()
-
-    '''
-    upswingrange = 0
-
-    if cHigh[-2] == max(cHigh[0:99]):
-        for c in range(2, 20):
-            if cClose[-c] > cClose[-c-1] and (abs(cOpen[-c] - cClose[-c]) / ((cHigh[-c] - cLow[-c]) / 100) > 75):
-                upswingrange += abs(cClose[-c] - cClose[-c-1])
-            else:
-                break
-
-    downswingrange = 0
-
-    if cLow[-2] == min(cLow[0:99]):
-        for c in range(2, 20):
-            if cClose[-c] < cClose[-c-1] and (abs(cOpen[-c] - cClose[-c]) / ((cHigh[-c] - cLow[-c]) / 100) > 75):
-                downswingrange += abs(cClose[-c-1] - cClose[-1])
-            else:
-                break
-
-    upswingrange = upswingrange / (cClose[-1] / 100)
-    upswingrange = float('{:.2f}'.format(upswingrange))
-
-    downswingrange = downswingrange / (cClose[-1] / 100)
-    downswingrange = float('{:.2f}'.format(downswingrange))
-
-    swingrange = max(upswingrange, downswingrange)
-    '''
 
     point1up_index = 0
     point1up_price = 0
@@ -289,80 +102,83 @@ def screensaver(symbol: str, timeinterval: str) -> List:
     atrper = atr / (cClose[-1] / 100)
     atrper = float('{:.2f}'.format(atrper))
 
+    lastrange = abs(cClose[-1] - cClose[-30])
+    lastrange = float('{:.2f}'.format(lastrange))
+
     # return [timeinterval, symbol, point1up_index, point1up_price, point2up_index, point2up_price, coefficient_falling, point1dn_index, point1dn_price, point2dn_index, point2dn_price, coefficient_rising, signal]
-    return [timeinterval, symbol, atrper, signal, coefficient_rising, coefficient_falling]
+    return [timeinterval, symbol, atrper, lastrange, signal, coefficient_rising, coefficient_falling]
 
 def s_on_m11(my_list, searchfilter):
-    for i in instruments1:
+    for i in section_1:
         data = screensaver(i, '1m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 
 def s_on_m12(my_list, searchfilter):
-    for i in instruments2:
+    for i in section_2:
         data = screensaver(i, '1m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m13(my_list, searchfilter):
-    for i in instruments3:
+    for i in section_3:
         data = screensaver(i, '1m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m14(my_list, searchfilter):
-    for i in instruments4:
+    for i in section_4:
         data = screensaver(i, '1m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m51(my_list, searchfilter):
-    for i in instruments1:
+    for i in section_1:
         data = screensaver(i, '5m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m52(my_list, searchfilter):
-    for i in instruments2:
+    for i in section_2:
         data = screensaver(i, '5m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m53(my_list, searchfilter):
-    for i in instruments3:
+    for i in section_3:
         data = screensaver(i, '5m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m54(my_list, searchfilter):
-    for i in instruments4:
+    for i in section_4:
         data = screensaver(i, '5m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m151(my_list, searchfilter):
-    for i in instruments1:
+    for i in section_1:
         data = screensaver(i, '15m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m152(my_list, searchfilter):
-    for i in instruments2:
+    for i in section_2:
         data = screensaver(i, '15m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m153(my_list, searchfilter):
-    for i in instruments3:
+    for i in section_3:
         data = screensaver(i, '15m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def s_on_m154(my_list, searchfilter):
-    for i in instruments4:
+    for i in section_4:
         data = screensaver(i, '15m')
-        if 0 < data[-3] < searchfilter:
+        if 0 < data[-3] and data[-4] >= searchfilter:
             my_list.append(data)
 
 def get_data_table(searchfilter: float):
@@ -379,10 +195,10 @@ def get_data_table(searchfilter: float):
     p7 = Process(target=s_on_m53, args=(table_data, searchfilter,))
     p8 = Process(target=s_on_m54, args=(table_data, searchfilter,))
 
-    p9 = Process(target=s_on_m151, args=(table_data, searchfilter,))
-    p10 = Process(target=s_on_m152, args=(table_data, searchfilter,))
-    p11 = Process(target=s_on_m153, args=(table_data, searchfilter,))
-    p12 = Process(target=s_on_m154, args=(table_data, searchfilter,))
+    # p9 = Process(target=s_on_m151, args=(table_data, searchfilter,))
+    # p10 = Process(target=s_on_m152, args=(table_data, searchfilter,))
+    # p11 = Process(target=s_on_m153, args=(table_data, searchfilter,))
+    # p12 = Process(target=s_on_m154, args=(table_data, searchfilter,))
 
     # p13 = Process(target=s_on_m601, args=(table_data, atrfilter, searchfilter,))
     # p14 = Process(target=s_on_m602, args=(table_data, atrfilter, searchfilter,))
@@ -397,10 +213,10 @@ def get_data_table(searchfilter: float):
     p6.start()
     p7.start()
     p8.start()
-    p9.start()
-    p10.start()
-    p11.start()
-    p12.start()
+    # p9.start()
+    # p10.start()
+    # p11.start()
+    # p12.start()
     # p13.start()
     # p14.start()
     # p15.start()
@@ -414,10 +230,10 @@ def get_data_table(searchfilter: float):
     p6.join()
     p7.join()
     p8.join()
-    p9.join()
-    p10.join()
-    p11.join()
-    p12.join()
+    # p9.join()
+    # p10.join()
+    # p11.join()
+    # p12.join()
     # p13.join()
     # p14.join()
     # p15.join()
@@ -431,10 +247,10 @@ def get_data_table(searchfilter: float):
     p6.close()
     p7.close()
     p8.close()
-    p9.close()
-    p10.close()
-    p11.close()
-    p12.close()
+    # p9.close()
+    # p10.close()
+    # p11.close()
+    # p12.close()
     # p13.close()
     # p14.close()
     # p15.close()

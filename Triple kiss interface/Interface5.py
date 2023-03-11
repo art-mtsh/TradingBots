@@ -4,7 +4,9 @@ import time
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
-from Interface3_mp import get_data_table
+from Interface5_mp import get_data_table
+
+filename = "log.txt"
 
 # --- GUI ---
 app = QApplication(sys.argv)
@@ -16,13 +18,13 @@ def refresh_table():
 	time1 = time.perf_counter()
 	print(f"Starting processes...at {datetime.datetime.now().strftime('%H:%M:%S')}")
 
-	table_data = get_data_table(searchfilter=0.5)
+	table_data = get_data_table(searchfilter=0.0)
 	num_rows = len(table_data)
 	table.setRowCount(num_rows)
 
-	num_cols = 3
+	num_cols = 10
 	table.setColumnCount(num_cols)
-	headers = ["Timeframe", "Symbol", "ATR %"]
+	headers = ["TF", "Symbol", "ATR %", "Found?", "p1u", "p2u", "p3u", "p1d", "p2d", "p3d"]
 	table.setHorizontalHeaderLabels(headers)
 	header_font = QFont("Calibri Light", 12, QFont.Bold)
 	table.horizontalHeader().setFont(header_font)
@@ -34,16 +36,25 @@ def refresh_table():
 			item.setTextAlignment(Qt.AlignCenter)
 			item.setFont(QFont("Calibri Light", 12))
 			table.setItem(i, j, item)
-			table.setColumnWidth(j, 200)
+			table.setColumnWidth(j, 100)
 
 	table.sortByColumn(2, Qt.DescendingOrder)
-	table.setFixedWidth(640)
+	table.setFixedWidth(1040)
 	table.show()
 
 	time2 = time.perf_counter()
 	time3 = time2-time1
 	print(f"Finished processes in {int(time3)} secs, at {datetime.datetime.now().strftime('%H:%M:%S')}")
 
+	for i in table_data:
+		file = open(filename, 'r+')
+		if f"{i[4]}/{i[5]}" not in file.read():
+			file.close()
+			file = open(filename, 'a')
+			file.seek(0)
+			file.write(f"{datetime.datetime.now().strftime('%H:%M:%S')} {i[1]}, {i[0]}, ATR %: {i[2]}"
+					   f"\n                                                                          {i[4]}/{i[5]}\n")
+		file.close()
 
 if __name__ == '__main__':
 
@@ -53,7 +64,7 @@ if __name__ == '__main__':
 	# Set up a QTimer to refresh the table every 5 minutes
 	timer = QTimer()
 	timer.timeout.connect(refresh_table)
-	timer.start(3 * 60 * 1000)  # 1 minutes in milliseconds
+	timer.start(1 * 60 * 1000)  # 1 minutes in milliseconds
 
 	# Run the event loop
 	sys.exit(app.exec_())
