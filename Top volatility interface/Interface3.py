@@ -19,9 +19,9 @@ def refresh_table():
 	num_rows = len(table_data)
 	table.setRowCount(num_rows)
 
-	num_cols = 6
+	num_cols = 9
 	table.setColumnCount(num_cols)
-	headers = ["TF", "Symbol", "Tick size, %", "Range-60, %", "ATR-60, %", "Avg.vol./1000, $"]
+	headers = ["TF", "Symbol", "Tick size, %", "Range-60, %", "ATR-60, %", "B/R-60, %", "B/R-10, %", "Avg.vol./1000, $", "Last price"]
 	table.setHorizontalHeaderLabels(headers)
 	header_font = QFont("Calibri Light", 12, QFont.Bold)
 	table.horizontalHeader().setFont(header_font)
@@ -52,9 +52,15 @@ def refresh_table():
 	table.setColumnWidth(2, 120)
 	table.setColumnWidth(3, 120)
 	table.setColumnWidth(4, 120)
-	table.setColumnWidth(5, 150)
+	table.setColumnWidth(5, 120)
+	table.setColumnWidth(6, 120)
+	table.setColumnWidth(7, 150)
+	table.setColumnWidth(8, 150)
+	# table.setColumnWidth(9, 70)
+	# table.setColumnWidth(10, 70)
+	# table.setColumnWidth(11, 70)
 
-	table.setFixedWidth(730)
+	table.setFixedWidth(1130)
 	table.show()
 
 	time2 = time.perf_counter()
@@ -62,7 +68,7 @@ def refresh_table():
 	print(f"Finished processes in {int(time3)} secs, at {datetime.datetime.now().strftime('%H:%M:%S')}")
 
 def run():
-	app = QApplication(sys.argv)
+	app = QApplication (sys.argv)
 	global table
 	table = QTableWidget()
 	table.horizontalHeader().sectionClicked.connect(lambda index: sortTable(table, index))

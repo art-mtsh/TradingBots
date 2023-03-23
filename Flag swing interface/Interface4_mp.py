@@ -51,9 +51,6 @@ def screensaver(symbol: str, timeinterval: str) -> List:
 
     coefficient_falling = 0
 
-    # if cHigh[-4] == max(cHigh[-2:-7:-1]):
-    #     pass
-
     for a in range(2, 45):
         if cHigh[-a - 4] < cHigh[-a - 3] < cHigh[-a - 2] > cHigh[-a - 1] > cHigh[-a]:
             point1up_price = cHigh[-a - 2]
@@ -73,9 +70,6 @@ def screensaver(symbol: str, timeinterval: str) -> List:
     point2dn_price = 0
 
     coefficient_rising = 0
-
-    # if cLow[-4] == min(cLow[-2:-7:-1]):
-    #     pass
 
     for c in range(2, 45):
         if cLow[-c - 4] > cLow[-c - 3] > cLow[-c - 2] < cLow[-c - 1] < cLow[-c]:
