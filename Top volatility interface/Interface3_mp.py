@@ -6,7 +6,7 @@ from instruments import section_1, section_2, section_3, section_4
 
 def calculator(symbol: str, timeinterval: str) -> List:
     # --- DATA ---
-    url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=300'
+    url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=650'
     data1 = get(url_klines).json()
 
     # --- K-LINE ---
@@ -49,9 +49,19 @@ def calculator(symbol: str, timeinterval: str) -> List:
     atr_10m = 0
     atr_60m = 0
     atr_240m = 0
+
     volatility_10m = 0
-    volatility_60m = 0
-    volatility_240m = 0
+    volatility_60m1 = 0
+    volatility_60m2 = 0
+    volatility_60m3 = 0
+    volatility_60m4 = 0
+    volatility_60m5 = 0
+    volatility_60m6 = 0
+    volatility_60m7 = 0
+    volatility_60m8 = 0
+    volatility_60m9 = 0
+    volatility_60m10 = 0
+
     atr_10per = 0
     atr_60per = 0
     atr_240per = 0
@@ -61,8 +71,8 @@ def calculator(symbol: str, timeinterval: str) -> List:
     avgvolume_60 = 0
     ticksizeper = 0
     # signal = 0
-    brratio_60 = 0
-    brratio_10 = 0
+    # brratio_60 = 0
+    # brratio_10 = 0
 
     try:
         atr_10m += (sum(sum([cHigh[-1:-11:-1] - cLow[-1:-11:-1]])) / len(cClose[-1:-11:-1]))
@@ -73,28 +83,42 @@ def calculator(symbol: str, timeinterval: str) -> List:
         atr_60per += atr_60m / (cClose[-1] / 100)
         atr_240per += atr_240m / (cClose[-1] / 100)
 
-        volatility_10m += abs((max(cHigh[-1:-11:-1]) - min(cLow[-1:-11:-1])) / (cClose[-1] / 100))
-        volatility_60m += abs((max(cHigh[-1:-61:-1]) - min(cLow[-1:-61:-1])) / (cClose[-1] / 100))
-        volatility_240m += abs((max(cHigh[-1:-240:-1]) - min(cLow[-1:-240:-1])) / (cClose[-1] / 100))
+        volatility_10m += ((max(cHigh[-1:-11:-1]) - min(cLow[-1:-11:-1])) / (cClose[-1] / 100))
+        volatility_60m1 += ((max(cHigh[-1:-61:-1]) - min(cLow[-1:-61:-1])) / (cClose[-1] / 100))
+        volatility_60m2 += ((max(cHigh[-61:-121:-1]) - min(cLow[-61:-121:-1])) / (cClose[-1] / 100))
+        volatility_60m3 += ((max(cHigh[-121:-181:-1]) - min(cLow[-121:-181:-1])) / (cClose[-1] / 100))
+        volatility_60m4 += ((max(cHigh[-181:-241:-1]) - min(cLow[-181:-241:-1])) / (cClose[-1] / 100))
+        volatility_60m5 += ((max(cHigh[-241:-301:-1]) - min(cLow[-241:-301:-1])) / (cClose[-1] / 100))
+        volatility_60m6 += ((max(cHigh[-301:-361:-1]) - min(cLow[-301:-361:-1])) / (cClose[-1] / 100))
+        volatility_60m7 += ((max(cHigh[-361:-421:-1]) - min(cLow[-361:-421:-1])) / (cClose[-1] / 100))
+        volatility_60m8 += ((max(cHigh[-421:-481:-1]) - min(cLow[-421:-481:-1])) / (cClose[-1] / 100))
+        volatility_60m9 += ((max(cHigh[-481:-541:-1]) - min(cLow[-481:-541:-1])) / (cClose[-1] / 100))
+        volatility_60m10 += ((max(cHigh[-541:-601:-1]) - min(cLow[-541:-601:-1])) / (cClose[-1] / 100))
+
 
         ticksizeper += (cTick / (cClose[-1] / 100))
         avgvolume_60 += int(((sum(cVolume[-1:-61:-1]) / len(cVolume[-1:-61:-1])) * cClose[-1]) / 1000)
 
-        ratio_list = []
-        for i in range(1, 61):
-            if cHigh[-i] > 0 and cLow[-i] > 0 and cClose[-i] > 0 and cOpen[-i] > 0 and cHigh[-i] != cLow[-i]: # and cOpen[-i] != cClose[-i]:
+        ### B/R ratio
 
-                ratio = abs(cClose[-i] - cOpen[-i]) / ((cHigh[-i] - cLow[-i]) / 100)
-                ratio_list.append(ratio)
-            else:
-                ratio_list.append(0)
+        # ratio_list = []
+        # for i in range(1, 61):
+        #     if cHigh[-i] > 0 and cLow[-i] > 0 and cClose[-i] > 0 and cOpen[-i] > 0 and cHigh[-i] != cLow[-i]: # and cOpen[-i] != cClose[-i]:
+        #
+        #         ratio = abs(cClose[-i] - cOpen[-i]) / ((cHigh[-i] - cLow[-i]) / 100)
+        #         ratio_list.append(ratio)
+        #     else:
+        #         ratio_list.append(0)
+        #
+        # if sum(ratio_list[0:10]) > 0 and len(ratio_list[0:10]) > 0:
+        #     brratio_10 += int(sum(ratio_list[0:10]) / len(ratio_list[0:10]))
+        #
+        # if sum(ratio_list) > 0 and len(ratio_list) > 0:
+        #     brratio_60 += int(sum(ratio_list) / len(ratio_list))
 
-        if sum(ratio_list[0:10]) > 0 and len(ratio_list[0:10]) > 0:
-            brratio_10 += int(sum(ratio_list[0:10]) / len(ratio_list[0:10]))
 
-        if sum(ratio_list) > 0 and len(ratio_list) > 0:
-            brratio_60 += int(sum(ratio_list) / len(ratio_list))
 
+        ### flag search
 
         # point1up_index = 0
         # point1up_price = 0
@@ -155,41 +179,69 @@ def calculator(symbol: str, timeinterval: str) -> List:
         print(f"Error for: {symbol}")
 
     ticksizeper = float('{:.4f}'.format(ticksizeper))
-    volatility_60m = float('{:.2f}'.format(volatility_60m))
+
+    volatility_10m = float('{:.2f}'.format(volatility_10m))
+    volatility_60m1 = float('{:.2f}'.format(volatility_60m1))
+    volatility_60m2 = float('{:.2f}'.format(volatility_60m2))
+    volatility_60m3 = float('{:.2f}'.format(volatility_60m3))
+    volatility_60m4 = float('{:.2f}'.format(volatility_60m4))
+    volatility_60m5 = float('{:.2f}'.format(volatility_60m5))
+    volatility_60m6 = float('{:.2f}'.format(volatility_60m6))
+    volatility_60m7 = float('{:.2f}'.format(volatility_60m7))
+    volatility_60m8 = float('{:.2f}'.format(volatility_60m8))
+    volatility_60m9 = float('{:.2f}'.format(volatility_60m9))
+    volatility_60m10 = float('{:.2f}'.format(volatility_60m10))
+
     atr_60per = float('{:.2f}'.format(atr_60per))
     lastprice = float(cClose[-1])
 
-    return [timeinterval, symbol, ticksizeper, volatility_60m, atr_60per, brratio_60, brratio_10, avgvolume_60, lastprice]
+    return [timeinterval,
+            symbol,
+            lastprice,
+            ticksizeper,
+            avgvolume_60,
+            atr_60per,
+            volatility_60m10,
+            volatility_60m9,
+            volatility_60m8,
+            volatility_60m7,
+            volatility_60m6,
+            volatility_60m5,
+            volatility_60m4,
+            volatility_60m3,
+            volatility_60m2,
+            volatility_60m1,
+            volatility_10m]
 
-def s_on_m11(my_list, searchfilter):
+def s_on_m11(my_list, filter1, filter2, filter3):
     for i in section_1:
         data = calculator(i, '1m')
-        if data[2] < 0.01 and data[4] >= 0.2 and data[8] <= 6:
+        if data[2] <= filter1 and data[3] < filter2 and data[4] > filter3:
             my_list.append(data)
-def s_on_m12(my_list, searchfilter):
+def s_on_m12(my_list, filter1, filter2, filter3):
     for i in section_2:
         data = calculator(i, '1m')
-        if data[2] < 0.01 and data[4] >= 0.2 and data[8] <= 6:
+        if data[2] <= filter1 and data[3] < filter2 and data[4] > filter3:
             my_list.append(data)
-def s_on_m13(my_list, searchfilter):
+def s_on_m13(my_list, filter1, filter2, filter3):
     for i in section_3:
         data = calculator(i, '1m')
-        if data[2] < 0.01 and data[4] >= 0.2 and data[8] <= 6:
+        if data[2] <= filter1 and data[3] < filter2 and data[4] > filter3:
             my_list.append(data)
-def s_on_m14(my_list, searchfilter):
+def s_on_m14(my_list, filter1, filter2, filter3):
     for i in section_4:
         data = calculator(i, '1m')
-        if data[2] < 0.01 and data[4] >= 0.2 and data[8] <= 6:
+        if data[2] <= filter1 and data[3] < filter2 and data[4] > filter3:
             my_list.append(data)
 
-def get_data_table(searchfilter: float):
+def get_data_table(filter1, filter2, filter3):
     manager = Manager()
     table_data = manager.list()
 
-    p1 = Process(target=s_on_m11, args=(table_data, searchfilter,))
-    p2 = Process(target=s_on_m12, args=(table_data, searchfilter,))
-    p3 = Process(target=s_on_m13, args=(table_data, searchfilter,))
-    p4 = Process(target=s_on_m14, args=(table_data, searchfilter,))
+    p1 = Process(target=s_on_m11, args=(table_data, filter1, filter2, filter3,))
+    p2 = Process(target=s_on_m12, args=(table_data, filter1, filter2, filter3,))
+    p3 = Process(target=s_on_m13, args=(table_data, filter1, filter2, filter3,))
+    p4 = Process(target=s_on_m14, args=(table_data, filter1, filter2, filter3,))
 
     p1.start()
     p2.start()
