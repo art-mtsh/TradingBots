@@ -16,39 +16,41 @@ def refresh_table():
 	time1 = time.perf_counter()
 	print(f"Starting processes...at {datetime.datetime.now().strftime('%H:%M:%S')}")
 
-	price_filter = 1000
-	tick_filter = 0.01
-	min_volume = 10
-	table_data = get_data_table(filter1 = price_filter, filter2 = tick_filter, filter3 = min_volume)
+	price_filter = 100000
+	tick_filter = 0.04
+	min_volume_filter = 10
+	atr_filter = 0.2
+	table_data = get_data_table(filter1 = price_filter, filter2 = tick_filter, filter3 = min_volume_filter, filter4 = atr_filter)
 	num_rows = len(table_data)
 	table.setRowCount(num_rows)
 
-	num_cols = 17
+	num_cols = 21
 	table.setColumnCount(num_cols)
-	table.setWindowTitle(f'Last price < {price_filter}, Tick size < {tick_filter}, 1 minute volume/1000 > {min_volume}')
+	table.setWindowTitle("MILLION DOLLARS")
 	headers = ["TF",
 			   "Symbol",
-			   "Last price",
-			   "Tick, %",
-			   "1000, $",
-			   "ATR-60, %",
-			   "R10, %",
-			   "R9, %",
-			   "R8, %",
-			   "R7, %",
-			   "R6, %",
-			   "R5, %",
-			   "R4, %",
-			   "R3, %",
-			   "R2, %",
-			   "R1, %",
-			   "Swing"]
+			   f"Price<{price_filter}",
+			   f"Tick<{tick_filter}",
+			   f"Vol>{min_volume_filter}k/m",
+			   f"ATR>{atr_filter}",
+			   "R10,%",
+			   "R9,%",
+			   "R8,%",
+			   "R7,%",
+			   "R6,%",
+			   "R5,%",
+			   "R4,%",
+			   "R3,%",
+			   "R2,%",
+			   "R1,%",
+			   "Ang.10m",
+			   "R10m,%",
+			   "Pin.H,%",
+			   "Pin.W,b",
+			   "Room"]
 	table.setHorizontalHeaderLabels(headers)
 	header_font = QFont("Calibri Light", 12, QFont.Bold)
 	table.horizontalHeader().setFont(header_font)
-	bg_color_g = QColor(230, 230, 230)
-	bg_color_gr = QColor(240, 255, 222)
-	bg_color_y = QColor(255, 255, 81)
 
 	for i, row in enumerate(table_data):
 		for j in range(num_cols):
@@ -66,26 +68,49 @@ def refresh_table():
 			item.setTextAlignment(Qt.AlignCenter)
 			item.setFont(QFont("Calibri Light", 12))
 			table.setItem(i, j, item)
-			table.setColumnWidth(j, 65)
+			table.setColumnWidth(j, 55)
 
 			if j in range(6, 16):
-				item.setBackground(bg_color_g)
+				item.setBackground(QColor(227, 242, 253))
 				if row[j] > 3:
-					item.setBackground(bg_color_y)
-			if j == 16:
-				item.setBackground(bg_color_gr)
-				if row[j] > 2:
-					item.setBackground(bg_color_y)
+					item.setBackground(QColor(187, 222, 251))
 
-	table.sortByColumn(16, Qt.DescendingOrder)
+			if j == 16:
+				item.setBackground(QColor(232, 245, 233))
+				if row[j] > 100:
+					item.setBackground(QColor(200, 230, 201))
+
+			if j == 17:
+				item.setBackground(QColor(232, 245, 233))
+				if row[j] > 2:
+					item.setBackground(QColor(200, 230, 201))
+
+			if j == 18 or j==19:
+				item.setBackground(QColor(252, 249, 249))
+				if row[j] > 0:
+					item.setBackground(QColor(255, 204, 188))
+
+			if j == 20:
+				item.setBackground(QColor(255, 243, 224))
+				if row[j] > 30:
+					item.setBackground(QColor(255, 224, 178))
+
+
+	table.sortByColumn(5, Qt.DescendingOrder)
 
 	table.setColumnWidth(0, 50)
-	table.setColumnWidth(1, 120)
-	table.setColumnWidth(2, 90)
-	table.setColumnWidth(3, 80)
-	table.setColumnWidth(5, 100)
+	table.setColumnWidth(1, 110)
+	table.setColumnWidth(2, 110)
+	table.setColumnWidth(3, 110)
+	table.setColumnWidth(4, 110)
+	table.setColumnWidth(5, 80)
+	table.setColumnWidth(16, 80)
+	table.setColumnWidth(17, 80)
+	table.setColumnWidth(18, 80)
+	table.setColumnWidth(19, 80)
+	table.setColumnWidth(20, 80)
 
-	table.setFixedWidth(1300)
+	table.setFixedWidth(1600)
 	table.show()
 
 	time2 = time.perf_counter()
@@ -100,7 +125,7 @@ def run():
 	refresh_table()
 	timer = QTimer()
 	timer.timeout.connect(refresh_table)
-	timer.start(1 * 60 * 1000)  # 5 minutes in milliseconds
+	timer.start(5 * 60 * 1000)  # 5 minutes in milliseconds
 	sys.exit(app.exec_())
 
 if __name__ == '__main__':
