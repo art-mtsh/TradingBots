@@ -16,15 +16,15 @@ def refresh_table():
 	time1 = time.perf_counter()
 	print(f"Starting processes...at {datetime.datetime.now().strftime('%H:%M:%S')}")
 
-	price_filter = 100000
-	tick_filter = 0.04
-	min_volume_filter = 10
+	price_filter = 1000
+	tick_filter = 0.02
+	min_volume_filter = 100
 	atr_filter = 0.2
 	table_data = get_data_table(filter1 = price_filter, filter2 = tick_filter, filter3 = min_volume_filter, filter4 = atr_filter)
 	num_rows = len(table_data)
 	table.setRowCount(num_rows)
 
-	num_cols = 21
+	num_cols = 19
 	table.setColumnCount(num_cols)
 	table.setWindowTitle("MILLION DOLLARS")
 	headers = ["TF",
@@ -44,9 +44,7 @@ def refresh_table():
 			   "R2,%",
 			   "R1,%",
 			   "Ang.10m",
-			   "R10m,%",
-			   "Pin.H,%",
-			   "Pin.W,b",
+			   "10EMA",
 			   "Room"]
 	table.setHorizontalHeaderLabels(headers)
 	header_font = QFont("Calibri Light", 12, QFont.Bold)
@@ -82,18 +80,13 @@ def refresh_table():
 
 			if j == 17:
 				item.setBackground(QColor(232, 245, 233))
-				if row[j] > 2:
+				if row[j] != 0:
 					item.setBackground(QColor(200, 230, 201))
 
-			if j == 18 or j==19:
+			if j == 18:
 				item.setBackground(QColor(252, 249, 249))
-				if row[j] > 0:
-					item.setBackground(QColor(255, 204, 188))
-
-			if j == 20:
-				item.setBackground(QColor(255, 243, 224))
 				if row[j] > 30:
-					item.setBackground(QColor(255, 224, 178))
+					item.setBackground(QColor(255, 204, 188))
 
 
 	table.sortByColumn(5, Qt.DescendingOrder)
@@ -107,10 +100,8 @@ def refresh_table():
 	table.setColumnWidth(16, 80)
 	table.setColumnWidth(17, 80)
 	table.setColumnWidth(18, 80)
-	table.setColumnWidth(19, 80)
-	table.setColumnWidth(20, 80)
 
-	table.setFixedWidth(1600)
+	table.setFixedWidth(1500)
 	table.show()
 
 	time2 = time.perf_counter()
@@ -125,7 +116,7 @@ def run():
 	refresh_table()
 	timer = QTimer()
 	timer.timeout.connect(refresh_table)
-	timer.start(5 * 60 * 1000)  # 5 minutes in milliseconds
+	timer.start(2 * 60 * 1000)  # 5 minutes in milliseconds
 	sys.exit(app.exec_())
 
 if __name__ == '__main__':

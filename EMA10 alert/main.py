@@ -1,8 +1,26 @@
 import datetime
 from multiprocessing import Process
 import time
-from pin_finder import pin_finder1
+from ema_finder import pin_finder1
 import instruments16
+
+#
+# instrument1 = 'ARBUSDT'
+# instrument2 = 'LQTYUSDT'
+# instrument3 = 'MAGICUSDT'
+# instrument4 = 'RNDRUSDT'
+#
+# instrument5 = 'FOOTBALLUSDT'
+# instrument6 = 'JASMYUSDT'
+# instrument7 = 'PEOPLEUSDT'
+# instrument8 = 'SXPUSDT'
+# instrument9 = 'CHZUSDT'
+# instrument10 = 'IOSTUSDT'
+# instrument11 = 'SRMUSDT'
+# instrument12 = 'OCEANUSDT'
+# # instrument13 = 'RENUSDT'
+# # instrument14 = 'MKRUSDT'
+
 
 def main():
 
@@ -86,7 +104,7 @@ def main():
 def waiting():
 	while True:
 		now = datetime.datetime.now()
-		if int(now.strftime('%S')) == 0:
+		if int(now.strftime('%S')) == 00:
 			break
 		time.sleep(0.1)
 
@@ -95,5 +113,5 @@ if __name__ == "__main__":
 	while True:
 		main()
 		print("")
-		time.sleep(10)
+		time.sleep(40)
 		waiting()
