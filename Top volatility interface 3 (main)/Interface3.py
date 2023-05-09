@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
 from Interface3_mp import get_data_table
 from PyQt5.QtGui import QColor
 
+
 # --- GUI ---
 
 def sortTable(table, logicalIndex):
@@ -85,7 +86,7 @@ def refresh_table():
 
 			if j == 18:
 				item.setBackground(QColor(252, 249, 249))
-				if row[j] > 30:
+				if row[j] > 120:
 					item.setBackground(QColor(255, 204, 188))
 
 
@@ -101,7 +102,7 @@ def refresh_table():
 	table.setColumnWidth(17, 80)
 	table.setColumnWidth(18, 80)
 
-	table.setFixedWidth(1500)
+	table.setFixedWidth(1400)
 	table.show()
 
 	time2 = time.perf_counter()
@@ -116,7 +117,7 @@ def run():
 	refresh_table()
 	timer = QTimer()
 	timer.timeout.connect(refresh_table)
-	timer.start(2 * 60 * 1000)  # 5 minutes in milliseconds
+	timer.start(2 * 60 * 1000)  # 2 minutes in milliseconds
 	sys.exit(app.exec_())
 
 if __name__ == '__main__':

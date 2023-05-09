@@ -10,13 +10,6 @@ from talib import EMA
 #
 # bot3.send_message(662482931, "Cross UNDER")
 
-url_tick = f"https://fapi.binance.com/fapi/v1/exchangeInfo"
-response = get(url_tick)
-data_tick = response.json()
 
-symbol_info = next(filter(lambda s: s['symbol'] == "INJUSDT", data_tick['symbols']), None)
-print(symbol_info)
-tick_size_filter = next(filter(lambda f: f['filterType'] == 'PRICE_FILTER', symbol_info['filters']), None)
-print(tick_size_filter)
-cTick = float(tick_size_filter['tickSize'])
-print(cTick)
+for i in range(20, 1, -1):
+	print(-i)

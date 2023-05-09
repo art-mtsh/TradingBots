@@ -1,10 +1,12 @@
-import pandas as pd
-from requests import get
-from typing import List
 from multiprocessing import Process, Manager
-import instruments16
-import telebot
+from typing import List
+
+import pandas as pd
 import talib
+import telebot
+from requests import get
+
+import instruments16
 
 # 10EMA basis
 emabasis = 100
