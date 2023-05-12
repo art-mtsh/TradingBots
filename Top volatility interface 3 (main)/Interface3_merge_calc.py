@@ -130,14 +130,14 @@ def calculator(symbol: str, timeinterval: str) -> List:
         ma9 = talib.EMA(cClose, int(emabasis * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta))[-1]
         ma10 = talib.EMA(cClose, int(emabasis * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta))[-1]
 
-        if ma1 >= ma2 >= ma3 >= ma4 >= ma5 >= ma6 >= ma7 >= ma8 >= ma9 >= ma10:
+        if ma1 >= ma2 >= ma3 >= ma3 >= ma4 >= ma5 >= ma6 >= ma7 >= ma8 >= ma9 >= ma10:
             tenema += 1
         elif ma1 <= ma2 <= ma3 <= ma4 <= ma5 <= ma6 <= ma7 <= ma8 <= ma9 <= ma10:
             tenema -= 1
 
-        # sma1 = sum(cClose[-1:-21:-1]) / 20
-        # sma2 = sum(cClose[-6:-26:-1]) / 20
-        # mangle += int(abs(sma1 - sma2) /  cTick)
+        ma1 = sum(cClose[-1:-21:-1]) / 20
+        ma2 = sum(cClose[-6:-26:-1]) / 20
+        mangle += int(abs(ma1 - ma2) /  cTick)
 
         for i in range(2, 241):
             if cHigh[-1] >= cHigh[-i]:
@@ -221,7 +221,7 @@ def s_on_m1(instr, my_list, filter1, filter2, filter3, filter4):
         if data[2] <= filter1 and data[3] <= filter2 and data[4] >= filter3 and data[5] >= filter4:
             my_list.append(data)
             if data[-1] >= 120:
-                bot3.send_message(662482931, f"{data[1]} room {data[-1]} atr {data[5]}%")
+                bot3.send_message(662482931, f"{data[1]} room {data[-1]}")
 
 
 def get_data_table(filter1, filter2, filter3, filter4):

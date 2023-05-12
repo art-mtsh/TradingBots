@@ -7,8 +7,7 @@ response = requests.get(url)
 data = response.json()
 
 # List of pairs to exclude
-# exclude = ['BTCUSDT', 'ETHUSDT', 'BNXUSDT', 'SSVUSDT', 'CKBUSDT']
-exclude = []
+exclude = ['RADUSDT', 'UMAUSDT']
 
 perpetual_pairs = [symbol['symbol'] for symbol in data['symbols'] if symbol['contractType'] == 'PERPETUAL' and symbol['symbol'] not in exclude]
 

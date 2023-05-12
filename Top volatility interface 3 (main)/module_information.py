@@ -1,12 +1,7 @@
-import pandas as pd
 from requests import get
-from typing import List
-from multiprocessing import Process, Manager
-import instruments16
-import telebot
-import talib
 
-def information_func(symbol: str, cOpen, cHigh, cLow, cClose, cVolume):
+
+def information_func(symbol: str, cHigh, cLow, cClose, cVolume):
 
 	# --- TICK SIZE ---
 	url_tick = f"https://fapi.binance.com/fapi/v1/exchangeInfo"
@@ -23,9 +18,8 @@ def information_func(symbol: str, cOpen, cHigh, cLow, cClose, cVolume):
 	atr_60m = (sum(sum([cHigh[-1:-61:-1] - cLow[-1:-61:-1]])) / len(cClose[-1:-61:-1]))
 	atr_60per = atr_60m / (cClose[-1] / 100)
 
-
 	lastprice = float(cClose[-1])
 	ticksizeper = float('{:.4f}'.format(ticksizeper))
 	atr_60per = float('{:.2f}'.format(atr_60per))
 
-	return symbol, lastprice, ticksizeper, avgvolume_60, atr_60per
+	return [symbol, lastprice, ticksizeper, avgvolume_60, atr_60per]

@@ -1,12 +1,6 @@
-import pandas as pd
-from requests import get
-from typing import List
-from multiprocessing import Process, Manager
-import instruments16
-import telebot
-import talib
 
-def volatility_grid_function(symbol: str, cOpen, cHigh, cLow, cClose, cVolume):
+
+def volatility_grid_function(cHigh, cLow, cClose):
 
 	volatility_60m10 = ((max(cHigh[-541:-601:-1]) - min(cLow[-541:-601:-1])) / (cClose[-1] / 100))
 	volatility_60m9 = ((max(cHigh[-481:-541:-1]) - min(cLow[-481:-541:-1])) / (cClose[-1] / 100))
@@ -19,4 +13,15 @@ def volatility_grid_function(symbol: str, cOpen, cHigh, cLow, cClose, cVolume):
 	volatility_60m2 = ((max(cHigh[-61:-121:-1]) - min(cLow[-61:-121:-1])) / (cClose[-1] / 100))
 	volatility_60m1 = ((max(cHigh[-1:-61:-1]) - min(cLow[-1:-61:-1])) / (cClose[-1] / 100))
 
-	return volatility_60m10, volatility_60m9, volatility_60m8, volatility_60m7, volatility_60m6, volatility_60m5, volatility_60m4, volatility_60m3, volatility_60m2, volatility_60m1
+	volatility_60m10 = float('{:.2f}'.format(volatility_60m10))
+	volatility_60m9 = float('{:.2f}'.format(volatility_60m9))
+	volatility_60m8 = float('{:.2f}'.format(volatility_60m8))
+	volatility_60m7 = float('{:.2f}'.format(volatility_60m7))
+	volatility_60m6 = float('{:.2f}'.format(volatility_60m6))
+	volatility_60m5 = float('{:.2f}'.format(volatility_60m5))
+	volatility_60m4 = float('{:.2f}'.format(volatility_60m4))
+	volatility_60m3 = float('{:.2f}'.format(volatility_60m3))
+	volatility_60m2 = float('{:.2f}'.format(volatility_60m2))
+	volatility_60m1 = float('{:.2f}'.format(volatility_60m1))
+
+	return [volatility_60m10, volatility_60m9, volatility_60m8, volatility_60m7, volatility_60m6, volatility_60m5, volatility_60m4, volatility_60m3, volatility_60m2, volatility_60m1]

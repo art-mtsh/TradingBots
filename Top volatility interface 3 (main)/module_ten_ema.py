@@ -1,12 +1,7 @@
-import pandas as pd
-from requests import get
-from typing import List
-from multiprocessing import Process, Manager
-import instruments16
-import telebot
 import talib
 
-def ten_ema_function(symbol: str, cOpen, cHigh, cLow, cClose, cVolume, emabasis: int, emadelta: float):
+
+def ten_ema_function(cClose, emabasis: int, emadelta: float):
 
 	ma1 = talib.EMA(cClose, emabasis)[-1]
 	ma2 = talib.EMA(cClose, int(emabasis * emadelta))[-1]
@@ -19,12 +14,11 @@ def ten_ema_function(symbol: str, cOpen, cHigh, cLow, cClose, cVolume, emabasis:
 	ma9 = talib.EMA(cClose, int(emabasis * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta))[-1]
 	ma10 = talib.EMA(cClose, int(emabasis * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta * emadelta))[-1]
 
-	tenema = 0
+	tenema = ""
 
 	if ma1 >= ma2 >= ma3 >= ma4 >= ma5 >= ma6 >= ma7 >= ma8 >= ma9 >= ma10:
-		tenema += 1
+		tenema += "Up"
 	elif ma1 <= ma2 <= ma3 <= ma4 <= ma5 <= ma6 <= ma7 <= ma8 <= ma9 <= ma10:
-		tenema -= 1
+		tenema += "Down"
 
-	return tenema
-
+	return [tenema]

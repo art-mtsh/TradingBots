@@ -11,5 +11,5 @@ from talib import EMA
 # bot3.send_message(662482931, "Cross UNDER")
 
 
-for i in range(20, 1, -1):
-	print(-i)
+for i in range(-3, -10, -1):
+	print(i)
