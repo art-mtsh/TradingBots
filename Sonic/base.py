@@ -83,10 +83,8 @@ def search_activale(price_filter, ticksize_filter, volume_filter, atr_filter):
 	print(f"Starting processes at {datetime.datetime.now().strftime('%H:%M:%S')}")
 	instr = get_pairs(price_filter, ticksize_filter, num_chunks=16)
 	total_count = sum(len(sublist) for sublist in instr)
-	bot1.send_message(662482931, f'🔹 watchlist for {total_count} symbols ({timeinterval}) 🔹')
-	bot1.send_message(662482931, f'🔹 price <= ${price_filter}, volume>=${volume_filter}.000/min 🔹')
-	bot1.send_message(662482931, f'🔹 tick<={ticksize_filter}%, avg.ATR>={atr_filter}% 🔹')
-	print(f"{total_count} symbols: Price <= ${price_filter}, Tick <= {ticksize_filter}%, Volume >= ${volume_filter}.000/min, avg.ATR >= {atr_filter}%")
+	bot1.send_message(662482931, f'️️{total_count}⚜️: <${price_filter}, >${volume_filter}.000/min, <{ticksize_filter}%, >{atr_filter}%')
+	print(f"{total_count} symbols: Price <= ${price_filter}, Volume >= ${volume_filter}.000/min, Tick <= {ticksize_filter}%, avg.ATR >= {atr_filter}%")
 	
 	p1 = Process(target=calculation, args=(instr[0], volume_filter, atr_filter,))
 	p2 = Process(target=calculation, args=(instr[1], volume_filter, atr_filter,))
@@ -158,16 +156,11 @@ def search_activale(price_filter, ticksize_filter, volume_filter, atr_filter):
 	p15.close()
 	p16.close()
 	
-	bot1.send_message(662482931, f'|--------- thats all ---------|')
+	bot1.send_message(662482931, f'|--------- thats all 🍌 --------|')
 	
 	time2 = time.perf_counter()
 	time3 = time2 - time1
 	print(f"Finished processes in {int(time3)} secs, at {datetime.datetime.now().strftime('%H:%M:%S')}\n")
-
-price_filter = 10000
-ticksize_filter = 0.02
-volume_filter = 5
-atr_filter = 0.25
 
 def waiting():
 	while True:
@@ -180,12 +173,18 @@ def waiting():
 		time.sleep(0.1)
 
 if __name__ == '__main__':
-    while True:
-        search_activale(
-            price_filter=price_filter,
-            ticksize_filter=ticksize_filter,
-            volume_filter=volume_filter,
-            atr_filter=atr_filter
-        )
-        time.sleep(60)
-        waiting()
+	
+	price_filter = 1000 #int(input('Pice less than: '))
+	ticksize_filter = 0.02 #float(input('Ticksize less than: '))
+	volume_filter = 1 #int(input('Volume more than: '))
+	atr_filter = float(input('ATR more than: '))
+	
+	while True:
+		search_activale(
+		    price_filter=price_filter,
+		    ticksize_filter=ticksize_filter,
+		    volume_filter=volume_filter,
+		    atr_filter=atr_filter
+		)
+		time.sleep(60)
+		waiting()
