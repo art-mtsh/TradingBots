@@ -53,7 +53,7 @@ def get_pairs(price_filter, ticksize_filter, num_chunks):
 	
 	avg_chunk_size = len(result_pairs) // num_chunks
 	remainder = len(result_pairs) % num_chunks
-	
+
 	chunks = []
 	i = 0
 	for _ in range(num_chunks):
@@ -61,5 +61,12 @@ def get_pairs(price_filter, ticksize_filter, num_chunks):
 		chunks.append(result_pairs[i:i + chunk_size])
 		i += chunk_size
 		remainder -= 1
-	
+
 	return chunks
+
+# res = get_pairs(10000, 0.02, 1)
+# print(res)
+# for i in res:
+# 	print(i)
+#
+# print(len(res))

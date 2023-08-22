@@ -170,12 +170,14 @@ volume_filter = 5
 atr_filter = 0.25
 
 def waiting():
-    while True:
-        now = datetime.datetime.now()
-        last_minute_digit = int(now.strftime('%M')[-1])
-        if last_minute_digit == 4 or last_minute_digit == 9:
-            break
-        time.sleep(0.1)
+	while True:
+		now = datetime.datetime.now()
+		last_minute_digit = int(now.strftime('%M')[-1])
+		hours_now = int(now.strftime('%H'))
+		if hours_now in list(range(9, 23)):
+			if last_minute_digit == 4 or last_minute_digit == 9:
+				break
+		time.sleep(0.1)
 
 if __name__ == '__main__':
     while True:
