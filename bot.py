@@ -1,15 +1,12 @@
-import pandas as pd
-from requests import get
 import telebot
-from talib import EMA
 
-# import datetime
-#
-# TOKEN3 = '6077915522:AAFuMUVPhw-cEaX4gCuPOa-chVwwMTpsUz8'
-# bot3 = telebot.TeleBot(TOKEN3)
-#
-# bot3.send_message(662482931, "Cross UNDER")
+TOKEN1 = '5657267406:AAExhEvjG3tjb0KL6mTM9otoFiL6YJ_1aSA'
+bot1 = telebot.TeleBot(TOKEN1)
 
+TOKEN2 = '5947685641:AAEofMStDGj0M0nGhVdlMEEEFP-dOAgOPaw'
+bot2 = telebot.TeleBot(TOKEN2)
 
-for i in range(-3, -10, -1):
-	print(i)
+TOKEN3 = '6077915522:AAFuMUVPhw-cEaX4gCuPOa-chVwwMTpsUz8'
+bot3 = telebot.TeleBot(TOKEN3)
+
+bot3.send_message(662482931, f'123')

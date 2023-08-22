@@ -7,7 +7,7 @@ response = requests.get(url)
 data = response.json()
 
 # List of pairs to exclude
-exclude = ['RADUSDT', 'UMAUSDT']
+exclude = [""]
 
 perpetual_pairs = [symbol['symbol'] for symbol in data['symbols'] if symbol['contractType'] == 'PERPETUAL' and symbol['symbol'] not in exclude]
 
@@ -34,20 +34,3 @@ section_13 = perpetual_pairs[section_length*12:section_length*13]
 section_14 = perpetual_pairs[section_length*13:section_length*14]
 section_15 = perpetual_pairs[section_length*14:section_length*15]
 section_16 = perpetual_pairs[section_length*15:]
-
-# print(section_1)
-# print(section_2)
-# print(section_3)
-# print(section_4)
-# print(section_5)
-# print(section_6)
-# print(section_7)
-# print(section_8)
-# print(section_9)
-# print(section_10)
-# print(section_11)
-# print(section_12)
-# print(section_13)
-# print(section_14)
-# print(section_15)
-# print(section_16)

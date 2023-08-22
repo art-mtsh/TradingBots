@@ -4,7 +4,8 @@ from multiprocessing import Process, Manager
 import instruments16
 import telebot
 from module_information import information_func
-from module_ten_ema import ten_ema_function
+from module_sonic import sonic_signal
+# from module_ten_ema import ten_ema_function
 from module_room import room_function
 from module_levels import levels_func
 
@@ -14,13 +15,13 @@ bot3 = telebot.TeleBot(TOKEN3)
 def calculation(instr, my_list, filter1, filter2, filter3, filter4):
 
     try:
-        timeinterval = '1m'
+        timeinterval = '15m'
 
         for symbol in instr:
             # --- DATA ---
-            url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=1000'
+            url_klines = 'https://fapi.binance.com/fapi/v1/klines?symbol=' + symbol + '&interval=' + timeinterval + '&limit=110'
             data1 = get(url_klines).json()
-
+            
             D1 = pd.DataFrame(data1)
             D1.columns = ['open_time',
                           'cOpen',
@@ -49,17 +50,15 @@ def calculation(instr, my_list, filter1, filter2, filter3, filter4):
 
             data = [timeinterval] + \
                    information_func(symbol=symbol, cHigh=cHigh, cLow=cLow, cClose=cClose, cVolume=cVolume) + \
-                   ten_ema_function(cClose=cClose, emabasis=50, emadelta=1.2) + \
-                   room_function(cHigh=cHigh, cLow=cLow, cClose=cClose) + \
-                   levels_func(symbol=symbol, cHigh=cHigh, cLow=cLow, cClose=cClose)
-
-
-            if data[2] <= filter1 and data[3] <= filter2 and data[4] >= filter3 and data[5] >= filter4:
+                   sonic_signal(cOpen = cOpen, cHigh=cHigh, cLow=cLow, cClose=cClose)
+                   # + \
+                   # room_function(cHigh=cHigh, cLow=cLow, cClose=cClose) + \
+                   # levels_func(symbol=symbol, cHigh=cHigh, cLow=cLow, cClose=cClose)
+            
+            # my_list.append(data)
+            if data[2] <= filter1 and data[3] <= filter2 and data[4] >= filter3 and data[5] >= filter4 and data[-1] != "Sleep":
                 my_list.append(data)
-                if data[-3] >= 60:
-                    bot3.send_message(662482931, f"{data[1]} room {data[-3]}")
-                # if 0 < data[-1] <= 0.5:
-                #     bot3.send_message(662482931, f"{data[1]} level {data[-2]} in {data[-1]}%")
+                bot3.send_message(662482931, f"{data[1]} {data[-1]} sonic!")
     except:
         print(f'Error main module for {symbol}')
 
